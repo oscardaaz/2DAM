@@ -1,3 +1,4 @@
+<h2 style="color: #2c3e50; font-family: Arial, sans-serif;"><strong>CFGS 2ºDAM (Desarrollo de Aplicaciones Multiplataforma).</strong></h2><br>
 
 <h2 style="color: #2c3e50; font-family: Arial, sans-serif;">Bienvenidos.</h2>
 
