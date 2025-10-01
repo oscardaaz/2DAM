@@ -1,8 +1,8 @@
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 
 public class App {
+    
+
     public static void main(String[] args) throws Exception {
 
         Path carpetaPrueba = Path.of("D:\\Users\\oscar.domalo", "prueba");
@@ -54,5 +54,18 @@ public class App {
             System.out.println("El documento.txt ya existe en: " + e.getMessage());
         }
 
+       
+            /*Path ruta = Path.of("D:\\Users\\oscar.domalo\\prueba\\subcarpeta1\\subcarpeta2\\documento.txt");
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(ruta)) {
+                for (Path entrada : stream) {
+                    System.out.println(entrada.getFileName());
+                }
+            }*/
+        
+        
+    
+        
+
+        
     }
 }
