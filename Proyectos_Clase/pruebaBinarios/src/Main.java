@@ -1,10 +1,9 @@
+package Proyectos_Clase.pruebaBinarios.src;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws Exception {
         //Clase NIO
@@ -33,31 +32,5 @@ public class Main {
             e.printStackTrace();
         }
 
-
-        //Clase NIO
-        // Ruta
-        //Path ruta = Path.of("fichBytes.dat");
-
-
-        //int i;
-
-        try (FileOutputStream flujoSalida = new FileOutputStream(ruta.toFile());
-             FileInputStream flujoEntrada = new FileInputStream(ruta.toFile())) {
-
-            //Escribimos los numeros del 1 al 100 como bytes.
-            for (i = 0; i < 100; i++) {
-                flujoSalida.write(i);
-
-            }
-
-            while ((i = flujoEntrada.read()) != -1) {
-
-                System.out.println(i);
-
-            }
-        } catch (IOException e) {
-            System.out.println("Error E/S: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }
