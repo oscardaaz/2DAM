@@ -1,8 +1,6 @@
 package datos.binarios.datos;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -10,7 +8,7 @@ public class DataStreams {
 
     public static void main(String[] args) {
 
-        Path ruta = Path.of("src/demos/binarios/datos/personas.dat");
+        Path ruta = Path.of("src/datos/binarios/datos/datosPersonas.dat");
 
         escribirPersonas(ruta);
 
@@ -28,7 +26,10 @@ public class DataStreams {
     for (int i = 0; i < nombres.length; i++) {
         dos.writeUTF(nombres[i]);
         dos.writeInt(edades[i]);
+
     }
+
+            System.out.println("Datos escritos correctamente en: " + ruta.toAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,6 +37,27 @@ public class DataStreams {
 
     private static void leerPersonas(Path ruta) {
 
+        try (InputStream flujoLectura = Files.newInputStream(ruta); DataInputStream dis = new DataInputStream(flujoLectura)){
+
+        while(true){
+
+            try {
+                String nombre = dis.readUTF();
+                int edad = dis.readInt();
+                System.out.printf("Nombre: %s, Edad: %d%n",nombre,
+                        edad);
+
+
+
+            } catch (EOFException e) {
+                System.out.println("Fin del fichero");
+               break;
+            }
+        }
+
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
 
     }
 }
