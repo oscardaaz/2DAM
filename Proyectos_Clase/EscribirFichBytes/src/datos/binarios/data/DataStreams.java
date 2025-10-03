@@ -16,7 +16,7 @@ public class DataStreams {
         leerPersonas(ruta);
 
     }
-
+    //prueba
     private static void escribirPersonas(Path ruta) {
 
         String[] nombres = {"Oscar", "Juan", "Pedro","Manuel","Juanma"};
