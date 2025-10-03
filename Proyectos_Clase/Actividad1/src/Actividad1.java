@@ -55,7 +55,7 @@ public class Actividad1 {
         } catch (FileAlreadyExistsException e) {
             System.out.println("El documento.txt ya existe en: " + e.getMessage());
         }
-
+//pruebaadd
        
             /*Path ruta = Path.of("D:\\Users\\oscar.domalo\\prueba\\subcarpeta1\\subcarpeta2\\documento.txt");
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(ruta)) {
