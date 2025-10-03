@@ -1,4 +1,4 @@
-package datos.binarios.datos;
+package datos.binarios.data;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -7,8 +7,9 @@ import java.nio.file.Path;
 public class DataStreams {
 
     public static void main(String[] args) {
+        System.out.println();
 
-        Path ruta = Path.of("src/datos/binarios/datos/datosPersonas.dat");
+        Path ruta = Path.of("src/datos/binarios/data/datosPersonas.dat");
 
         escribirPersonas(ruta);
 
@@ -42,8 +43,10 @@ public class DataStreams {
         while(true){
 
             try {
+
                 String nombre = dis.readUTF();
                 int edad = dis.readInt();
+
                 System.out.printf("Nombre: %s, Edad: %d%n",nombre,
                         edad);
 
@@ -54,6 +57,8 @@ public class DataStreams {
                break;
             }
         }
+
+
 
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
