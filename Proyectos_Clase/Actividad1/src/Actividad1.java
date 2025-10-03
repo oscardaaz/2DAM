@@ -1,9 +1,9 @@
+package Proyectos_Clase.Actividad1.src;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 
 public class Actividad1 {
-    
 
     public static void main(String[] args) throws Exception {
 
