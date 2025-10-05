@@ -1,9 +1,7 @@
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -158,7 +156,8 @@ public class Main {
     todos sus subdirectorios de forma recursiva, indicando si cada elemento es un fichero o un
     subdirectorio. */
 
-    //La sangria usando un atributo extra en el metodo "Nivel" lo he tenido que buscar la solución en internet no conseguia solucionarlo
+    //La sangria usando un atributo extra en el metodo "Nivel" lo he tenido que buscar la solución
+    // en internet no conseguia solucionarlo
 
     public static void mostrarContenidoRecursivo(Path ruta) {
         mostrarContenidoRecursivo(ruta, 0);
