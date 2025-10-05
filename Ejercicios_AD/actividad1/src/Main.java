@@ -10,18 +10,18 @@ public class Main {
 
     public static void main(String[] args)  {
 
-        System.out.println();
+        System.out.println("Actividad 1. Creación de archivos y directorios");
         crearDirectorioArchivos(Path.of("C:\\Users\\Oscar","prueba"));
 
-        System.out.println();
+        System.out.println("Actividad 2. Borrar un directorio y su contenido");
         borrarDirectorioContenido(Path.of("C:\\Users\\Oscar\\prueba"));
 
         Path rutaProyecto = Path.of("C:\\Users\\Oscar\\IdeaProjects\\2DAM\\Ejercicios_AD\\actividad1");
 
-        System.out.println();
+        System.out.println("Actividad 3. Mostrar el contenido del directorio (Sin recursividad)");
         mostrarContenidoDirectorio(rutaProyecto);
 
-        System.out.println();
+        System.out.println("Actividad 4. Mostrar el contenido del directorio (Con recursividad)");
         mostrarContenidoRecursivo(rutaProyecto);
     }
 
