@@ -28,6 +28,7 @@ public class ObjectStreams_v1 {
 
                     Persona persona = (Persona) ois.readObject();
                     System.out.printf("Persona %d leida correctamente%n", contador++);
+                    System.out.println(persona);
 
                 }catch (EOFException eofe) {
                     System.out.println("Fin de lectura");
