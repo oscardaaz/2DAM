@@ -5,24 +5,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class DataStreams_apend {
+public class DataStreams_append {
+
     private static final Path RUTA = Path.of("src\\datos\\binarios\\data\\personas.dat");
+
     public static void main(String[] args) {
 
 
-       // escribirInicial();
-        leerPersonas(RUTA);
+        //Añadiendo al final del fichero con añadir registro y cambiando el parámetro de leerPersonas() y escribirPersonas()
+
+        escribirPersonas();
+        System.out.println();
+        leerPersonas();
+        System.out.println();
         anadirRegistro("Antonio",14);
         anadirRegistro("Luis",15);
-        leerPersonas(RUTA);
+        anadirRegistro("Maria",16);
+        anadirRegistro("Jose",17);
+        anadirRegistro("Juan",18);
+        System.out.println();
+        leerPersonas();
     }
     //prueba
-    private static void escribirPersonas(Path ruta) {
+    private static void escribirPersonas() {
 
         String[] nombres = {"Oscar", "Juan", "Pedro","Manuel","Juanma"};
         int[] edades = {20, 30, 40, 50, 60};
 
-        try (OutputStream flujoEscritura = Files.newOutputStream(ruta);DataOutputStream dos = new DataOutputStream(flujoEscritura)) {
+        try (OutputStream flujoEscritura = Files.newOutputStream(RUTA);DataOutputStream dos = new DataOutputStream(flujoEscritura)) {
 
     for (int i = 0; i < nombres.length; i++) {
         dos.writeUTF(nombres[i]);
@@ -30,15 +40,15 @@ public class DataStreams_apend {
 
     }
 
-            System.out.println("Datos escritos correctamente en: " + ruta.toAbsolutePath());
+            System.out.println("Datos escritos correctamente en: " + RUTA.toAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void leerPersonas(Path ruta) {
+    private static void leerPersonas() {
 
-        try (InputStream flujoLectura = Files.newInputStream(ruta); DataInputStream dis = new DataInputStream(flujoLectura)){
+        try (InputStream flujoLectura = Files.newInputStream(RUTA); DataInputStream dis = new DataInputStream(flujoLectura)){
 
         while(true){
 
@@ -57,8 +67,6 @@ public class DataStreams_apend {
                break;
             }
         }
-
-
 
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
