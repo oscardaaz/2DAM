@@ -35,10 +35,10 @@ public class gestionEmpleados {
 
             for (int i = 0; i <= 3; i++) {
 
-                Empleado empleado1 = new Empleado();
+                Empleado empleado = new Empleado();
                 System.out.print("Introduce el nombre del empleado: ");
-                empleado1.setNombre(sc.nextLine());
-                empleados.add(empleado1);
+                empleado.setNombre(sc.nextLine());
+                empleados.add(empleado);
                 oos.writeObject(empleado1);
                 System.out.printf("Persona %d escrita correctamente%n", contador++);
             }
