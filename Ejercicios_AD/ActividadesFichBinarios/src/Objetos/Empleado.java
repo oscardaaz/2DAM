@@ -1,15 +1,17 @@
 package Objetos;
 
-import java.sql.Array;
-import java.util.ArrayList;
+import java.io.Serial;
+import java.io.Serializable;
 
-public class Empleado {
+
+public class Empleado implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     String nombre;
     int departamento;
     double salario;
-
-    public ArrayList<Empleado> empleados = new ArrayList<>();
 
     public Empleado(String nombre, int departamento, double salario) {
         this.nombre = nombre;
@@ -19,34 +21,8 @@ public class Empleado {
 
     @Override
     public String toString() {
-        return "Empleado{" +
-                "nombre='" + nombre + '\'' +
-                ", departamento=" + departamento +
-                ", salario=" + salario +
-                '}';
+        return String.format("Nombre: %s      Depto: %d      Salario: %.2f €", nombre, departamento, salario);
     }
 
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public int getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(int departamento) {
-        this.departamento = departamento;
-    }
-
-    public double getSalario() {
-        return salario;
-    }
-
-    public void setSalario(double salario) {
-        this.salario = salario;
-    }
 }

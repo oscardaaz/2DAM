@@ -25,16 +25,7 @@ public class actividadFicheros {
 
     private static void escribirPersonas() {
 
-        /*String[] marca = {};
-        String[] modelo = {};
-        String[] color = {};
-        int[] año  = {};
-        String[] pinturaMetalizada = {"si","no"};*/
-
-        System.out.println("Escribe el nombre del fichero");
-
-        String nombreFichero = sc.nextLine();
-         Path ruta = Path.of("src", nombreFichero);
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a leer: ");
 
         try (OutputStream flujoEscritura = Files.newOutputStream(ruta);
              DataOutputStream dos = new DataOutputStream(flujoEscritura)) {
@@ -77,11 +68,7 @@ public class actividadFicheros {
 
     private static void leerPersonas() {
 
-        System.out.println("Escribe el nombre del fichero a leer");
-
-        String nombreFichero = sc.nextLine();
-        Path ruta = Path.of("src", nombreFichero);
-        System.out.println();
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a leer: ");
 
         try (InputStream flujoLectura = Files.newInputStream(ruta); DataInputStream dis = new DataInputStream(flujoLectura)){
 
@@ -113,5 +100,12 @@ public class actividadFicheros {
             throw new RuntimeException(ioe);
         }
 
+    }
+
+    private static Path obtenerRutaFichero(String mensaje) {
+        System.out.print(mensaje);
+        String nombreFichero = sc.nextLine();
+        System.out.println();
+        return Path.of(System.getProperty("user.dir"),nombreFichero);
     }
 }
