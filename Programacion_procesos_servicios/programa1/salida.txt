@@ -1,0 +1,16 @@
+ El volumen de la unidad D es Datos
+ El n£mero de serie del volumen es: 0CED-A40B
+
+ Directorio de D:\Users\oscar.domalo\Documents\2DAM\Programacion_procesos_servicios\programa1
+
+16/10/2025  21:03    <DIR>          .
+16/10/2025  20:40    <DIR>          ..
+16/10/2025  19:52               352 .gitignore
+16/10/2025  21:04    <DIR>          .idea
+16/10/2025  21:04                 0 error.txt
+16/10/2025  20:06    <DIR>          out
+16/10/2025  20:37               433 programa1.iml
+16/10/2025  21:04                 0 salida.txt
+16/10/2025  20:04    <DIR>          src
+               4 archivos            785 bytes
+               5 dirs  1.650.760.966.144 bytes libres

@@ -1,10 +1,11 @@
 package programa1;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class p1 {
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
         ProcessBuilder pb = new ProcessBuilder("CMD", "/C", "DIR");
         try {
@@ -32,5 +33,19 @@ public class p1 {
         } catch (IOException | InterruptedException e) {
             System.err.println("Error: " + e.getMessage());
         }
+
+
+        File fOut = new File("salida.txt");
+        File fErr = new File("error.txt");
+
+        pb.redirectOutput(fOut);
+        pb.redirectError(fErr);
+
+        try{
+            pb.start();
+        }catch (IOException e){
+            e.getMessage();
+        }
+
     }
 }
