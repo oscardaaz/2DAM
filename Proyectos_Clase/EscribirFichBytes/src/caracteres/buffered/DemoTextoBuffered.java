@@ -23,9 +23,9 @@ public class DemoTextoBuffered {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(rutaFichero))) {
             for (int i = 1; i <= 10; i++) {
 
-                //bw.write("Fila número " + i + "\n"); //Opcion1
+                //bw.write("Fila número " + i + "\n"); //Opción1
 
-                bw.write("Fila número " + i ); //Opcion2
+                bw.write("Fila número " + i ); //Opción2
                 bw.newLine();
             }
             System.out.println("Fichero escrito correctamente.");
