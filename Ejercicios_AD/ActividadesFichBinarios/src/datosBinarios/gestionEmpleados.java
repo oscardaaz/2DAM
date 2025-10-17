@@ -44,8 +44,8 @@ public class gestionEmpleados {
             int cantidadEmpleados = existe ? cantidadEmpleados() : 3;
             String mensaje = existe ? " a añadir: "
                                     : ": " ;
-            String mensajeFichero = existe  ? "Fichero sobreescrito correctamente"
-                                            : "Fichero escrito correctamente" ;
+            String mensajeFichero = existe  ? "\nFichero sobreescrito correctamente"
+                                            : "\nFichero escrito correctamente" ;
 
             for (int i = 1; i <= cantidadEmpleados; i++) {
 
