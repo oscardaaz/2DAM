@@ -10,6 +10,41 @@ fun main() {
 }
 
 
+fun arrays() {
+    val coches = arrayOf("Volvo", "Tesla", "Mercedes")
+    //val coches2 = arrayOf<String>("Volvo","Tesla","Mercedes")
+    val numeros = arrayOf(1, 2, 3)
+    val numeros2 = intArrayOf(1, 2, 3)
+    val otro = booleanArrayOf(true, false)
+    val otro2 = charArrayOf('c')
+    //............
+    //Podemos tener valores de distintos tipos
+    val otro3 = arrayOf(1, 2, 3, "cadena", true)
+
+    //Con el constructor de Array
+    val arr1 = IntArray(size = 5);
+    val arr2 = IntArray(size = 5) { 0 }
+    val arr3 = Array(size = 5) { 0 }
+    val arr4 = Array(size = 5) { it + 1 } //1, 2, 3, 4, 5
+    val arr5 = Array(size = 5) { it -> it + 1 } //1, 2, 3, 4, 5
+    val arr6 = Array(size = 5) { a -> a + 1 } //1, 2, 3, 4, 5
+
+    //Modificar indices
+
+    arr5[0] = 25;
+    //arr5.set(1,25)    //Preferida la sintaxis con corchetes []
+
+    println(arr5[0])
+    //println(arr5.get(0))  //Preferida la sintaxis con corchetes []
+
+    println(arr5.size) //Mostrar el tamaño del array, en java el arr5.length();
+
+
+}
+
+fun inicializarValores(a: Int) {
+    val a = a + 1
+}
 
 fun variables() {
 
@@ -47,21 +82,22 @@ fun variables() {
     val _99problems: String
     //TODO etc.*/
 }
-    fun otra(){
-        println("Escribe algo")
-        val nombre2 = readln()
 
-        println("Hola\n")
-        println("Hola $nombre2\n")
-        println("La cadena $nombre2 tiene ${nombre2.length}\t")
+fun otra() {
+    println("Escribe algo")
+    val nombre2 = readln()
 
-        val cadena = """
+    println("Hola\n")
+    println("Hola $nombre2\n")
+    println("La cadena $nombre2 tiene ${nombre2.length}\t")
+
+    val cadena = """
             Hola aqui puedo poner lo que quiera
             y respeta los saltos de linea
             y esas cosas varias 
             """.trimIndent()
-        println(cadena)
-    }
+    println(cadena)
+}
 
 
 
