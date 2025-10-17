@@ -1,26 +1,26 @@
-package caracteres.buffered;
+package caracteres.path_y_files;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class DemoTextoBuffered {
+public class DemoTextoPathBuffered {
 
-    //private static final Path rutaFichero = Path.of("src/caracteres/buffered","ficheroBuffered.txt");
-    private static final String rutaFichero = "src/caracteres/buffered/ficheroBuffered.txt";
+    private static final Path rutaFichero = Path.of("src/caracteres/path_y_files","ficheroPathBuffered.txt");
+    //private static final String rutaFichero = "src/caracteres/path_y_files/ficheroPathBuffered.txt";
+
     public static void main(String[] args) {
 
-        escribirBuffered();
-        leerBuffered();
-
-
+        escribirPathBuffered();
+        leerPathBuffered();
 
     }
 
 
 
-    private static void escribirBuffered(){
+    private static void escribirPathBuffered(){
 
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(rutaFichero))) {
+        try(BufferedWriter bw = Files.newBufferedWriter(rutaFichero)) {
             for (int i = 1; i <= 10; i++) {
 
                 //bw.write("Fila número " + i + "\n"); //Opcion1
@@ -34,8 +34,8 @@ public class DemoTextoBuffered {
         }
     }
 
-    private static void leerBuffered() {
-        try(BufferedReader br = new BufferedReader(new FileReader(rutaFichero))){
+    private static void leerPathBuffered() {
+        try(BufferedReader br = Files.newBufferedReader(rutaFichero)){
             String linea;
             while ((linea = br.readLine()) != null){
                 System.out.println(linea);
