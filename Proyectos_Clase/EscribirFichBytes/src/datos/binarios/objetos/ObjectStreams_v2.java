@@ -36,7 +36,7 @@ public class ObjectStreams_v2 {
         try (OutputStream os = Files.newOutputStream(
                 RUTA,
                 StandardOpenOption.APPEND);
-                ObjectOutputStream oos = existe
+                ObjectOutputStream oos = existe //Valor booleano true/false para si existe se hace sin cabecera y no da error..
                    ? new ObjectOutputStreamSinCabecera(os)
                         : new ObjectOutputStream(os)){
                 oos.writeObject(persona);
