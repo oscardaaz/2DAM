@@ -18,7 +18,7 @@ public class gestionEmpleados {
         //Actividades ficheros binarios (1.6)
 
         escribirEmpleado();
-        //leerEmpleados();
+        leerEmpleados();
     }
 
     private static int cantidadEmpleados(){
@@ -44,7 +44,7 @@ public class gestionEmpleados {
             int cantidadEmpleados = existe ? cantidadEmpleados() : 3;
             String mensaje = existe ? " a añadir: "
                                     : ": " ;
-            String mensajeFichero = existe  ? "\nFichero sobreescrito correctamente"
+            String mensajeFichero = existe  ? "\nEmpleados añadidos a fichero correctamente"
                                             : "\nFichero escrito correctamente" ;
 
             for (int i = 1; i <= cantidadEmpleados; i++) {
@@ -78,6 +78,8 @@ public class gestionEmpleados {
         try (InputStream is = Files.newInputStream(ruta);
              ObjectInputStream ois = new ObjectInputStream(is)) {
             //int contador = 1;
+            System.out.println("Empleados registrados: \n");
+
             while (true) {
                 try {
 
@@ -98,7 +100,7 @@ public class gestionEmpleados {
 
 
         } catch (IOException e) {
-            System.err.println("Error al leer el Empleado " + e.getMessage());
+            System.err.println("Error al leer el fichero " + e.getMessage());
         }
     }
 
