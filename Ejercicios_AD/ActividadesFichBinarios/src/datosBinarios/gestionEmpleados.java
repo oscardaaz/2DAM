@@ -22,7 +22,8 @@ public class gestionEmpleados {
 
     private static void escribirEmpleado() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir (Recuerda que sea extension .dat o .bin): ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir" +
+                " (Recuerda que sea extension .dat o .bin): ");
         boolean existe = Files.exists(ruta);
 
         try (OutputStream os = Files.newOutputStream(

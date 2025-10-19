@@ -19,7 +19,8 @@ public class actividadFicheros {
 
     private static void escribirPersonas() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir (Recuerda que sea extension .dat o .bin): ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a " +
+                "escribir o sobreescribir (Recuerda que sea extension .dat o .bin): ");
         boolean existe = Files.exists(ruta);
 
         try (OutputStream flujoEscritura = Files.newOutputStream(ruta,
