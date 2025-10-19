@@ -22,8 +22,9 @@ public class gestionEmpleados {
     }
 
     private static int cantidadEmpleados(){
-        System.out.println("Introduce la cantidad de empleados a añadir");
+        System.out.print("Introduce la cantidad de empleados a añadir");
         int cantidadEmpleados = sc.nextInt();
+        System.out.println();
         sc.nextLine();
         return cantidadEmpleados;
     }
@@ -44,8 +45,8 @@ public class gestionEmpleados {
             int cantidadEmpleados = existe ? cantidadEmpleados() : 3;
             String mensaje = existe ? " a añadir: "
                                     : ": " ;
-            String mensajeFichero = existe  ? "\nEmpleados añadidos a fichero correctamente"
-                                            : "\nFichero escrito correctamente" ;
+            String mensajeFichero = existe  ? "\nEmpleados añadidos a fichero correctamente en: " +ruta.toAbsolutePath() + "\n"
+                                            : "\nFichero escrito correctamente en: " + ruta.toAbsolutePath() +"\n" ;
 
             for (int i = 1; i <= cantidadEmpleados; i++) {
 
@@ -55,7 +56,7 @@ public class gestionEmpleados {
                 System.out.print("Introduce el departamento del empleado" + mensaje);
                 int departamento = sc.nextInt();
 
-                System.out.print("Introduce el salario del empleado"+mensaje);
+                System.out.print("Introduce el salario (Separador de decimales con .) del empleado"+mensaje);
                 double salario = sc.nextDouble();
                 sc.nextLine();
 
@@ -68,7 +69,7 @@ public class gestionEmpleados {
             System.out.println(mensajeFichero);
 
         } catch (IOException ioe) {
-            System.err.println("Error al escribir el Empleado " + ioe.getMessage());
+            System.err.println("Error al escribir el Empleado en el fichero: " + ruta.toAbsolutePath() + ioe.getMessage());
         }
     }
 
@@ -100,7 +101,7 @@ public class gestionEmpleados {
 
 
         } catch (IOException e) {
-            System.err.println("Error al leer el fichero " + e.getMessage());
+            System.err.println("Error al leer el fichero: "+ ruta.toAbsolutePath() + e.getMessage());
         }
     }
 

@@ -3,6 +3,7 @@ package datosBinarios;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 public class actividadFicheros {
@@ -11,12 +12,12 @@ public class actividadFicheros {
 
 
     public static void main(String[] args) {
-        //Actividades ficheros binarios (1.5 y 1.6)
+        //Actividad ficheros binarios (1.5)
 
 
-        escribirPersonas();
+        //escribirPersonas();
 
-        //leerPersonas();
+        leerPersonas();
 
 
     }
@@ -24,9 +25,11 @@ public class actividadFicheros {
 
     private static void escribirPersonas() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir: ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir (Recuerda que sea extension .dat o .bin: ");
 
-        try (OutputStream flujoEscritura = Files.newOutputStream(ruta);
+        try (OutputStream flujoEscritura = Files.newOutputStream(ruta,
+                StandardOpenOption.APPEND,
+                StandardOpenOption.CREATE);
              DataOutputStream dos = new DataOutputStream(flujoEscritura)) {
 
             for (int i = 0; i <= 2; i++) {
@@ -52,8 +55,8 @@ public class actividadFicheros {
 
                 if (!respuestaPintura.equalsIgnoreCase("si") && !respuestaPintura.equalsIgnoreCase("no")) {
                     System.out.println("La respuesta no ha sido (si/no); se añadirá un valor por defecto (no).");
-                    pinturaMetalizada = false;
                 }
+
 
                 System.out.print("Escribe el año de adquisición: ");
                 int año = sc.nextInt();
@@ -96,10 +99,11 @@ public class actividadFicheros {
 
                     //System.out.printf("Marca: %s, Modelo: %s, Color: %s, Pintura Metalizada %s, año: %d%n%n", marca, modelo, color, (pinturaMetalizada ? "Sí" : "No"), año);
 
-                    System.out.printf("Marca: %s, Modelo: %s, Color: %s%n%n", marca, modelo, color);
+                    System.out.printf("Marca: %s, Modelo: %s, Color: %s%n", marca, modelo, color);
+
 
                 } catch (EOFException e) {
-                    System.out.println("Fin del fichero");
+                    System.out.println("\nFin del fichero");
                     break;
                 }
             }
