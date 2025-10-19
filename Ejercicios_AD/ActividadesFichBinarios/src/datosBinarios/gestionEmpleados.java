@@ -9,29 +9,20 @@ import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Scanner;
 
-
 public class gestionEmpleados {
 
     private static final Scanner sc = new Scanner(System.in).useLocale(Locale.US);
 
     public static void main(String[] args) {
-        //Actividades ficheros binarios (1.6)
+        //Actividades ficheros binarios (1.6) (Empleados)
 
         escribirEmpleado();
         leerEmpleados();
     }
 
-    private static int cantidadEmpleados(){
-        System.out.print("Introduce la cantidad de empleados a añadir");
-        int cantidadEmpleados = sc.nextInt();
-        System.out.println();
-        sc.nextLine();
-        return cantidadEmpleados;
-    }
-
     private static void escribirEmpleado() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir: ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir (Recuerda que sea extension .dat o .bin): ");
         boolean existe = Files.exists(ruta);
 
         try (OutputStream os = Files.newOutputStream(
@@ -45,8 +36,8 @@ public class gestionEmpleados {
             int cantidadEmpleados = existe ? cantidadEmpleados() : 3;
             String mensaje = existe ? " a añadir: "
                                     : ": " ;
-            String mensajeFichero = existe  ? "\nEmpleados añadidos a fichero correctamente en: " +ruta.toAbsolutePath() + "\n"
-                                            : "\nFichero escrito correctamente en: " + ruta.toAbsolutePath() +"\n" ;
+            String mensajeFichero = existe  ? "Empleados añadidos a fichero correctamente en: " +ruta.toAbsolutePath() + "\n"
+                                            : "Empleados registrados en fichero escritos correctamente en: " + ruta.toAbsolutePath() +"\n" ;
 
             for (int i = 1; i <= cantidadEmpleados; i++) {
 
@@ -62,7 +53,7 @@ public class gestionEmpleados {
 
                 Empleado empleado = new Empleado(nombre, departamento, salario);
                 oos.writeObject(empleado);
-                System.out.printf("Empleado %d escrito correctamente%n", i);
+                System.out.printf("Empleado %d %s escrito correctamente%n%n", i , nombre);
 
             }
 
@@ -110,6 +101,14 @@ public class gestionEmpleados {
         String nombreFichero = sc.nextLine();
         System.out.println();
         return Path.of(System.getProperty("user.dir"),nombreFichero);
+    }
+
+    private static int cantidadEmpleados(){
+        System.out.print("Introduce la cantidad de empleados a añadir: ");
+        int cantidadEmpleados = sc.nextInt();
+        System.out.println();
+        sc.nextLine();
+        return cantidadEmpleados;
     }
 
     private static class ObjectOutputStreamSinCabecera extends ObjectOutputStream{

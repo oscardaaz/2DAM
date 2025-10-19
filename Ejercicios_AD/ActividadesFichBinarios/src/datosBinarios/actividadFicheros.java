@@ -9,30 +9,31 @@ import java.util.Scanner;
 public class actividadFicheros {
 
     static Scanner sc = new Scanner(System.in);
-
-
     public static void main(String[] args) {
-        //Actividad ficheros binarios (1.5)
+        //Actividad ficheros binarios (1.5) (Vehiculos)
 
-
-        //escribirPersonas();
-
+        escribirPersonas();
         leerPersonas();
-
 
     }
 
-
     private static void escribirPersonas() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir (Recuerda que sea extension .dat o .bin: ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir (Recuerda que sea extension .dat o .bin): ");
+        boolean existe = Files.exists(ruta);
 
         try (OutputStream flujoEscritura = Files.newOutputStream(ruta,
                 StandardOpenOption.APPEND,
                 StandardOpenOption.CREATE);
              DataOutputStream dos = new DataOutputStream(flujoEscritura)) {
 
-            for (int i = 0; i <= 2; i++) {
+            int cantidad = existe ? cantidadVehiculos() : 2;
+            String mensaje = existe ? " a añadir: "
+                    : ": ";
+            String mensajeFichero = existe ? "Vehículos añadidos en el fichero correctamente: "
+                    : "Vehículos escritos correctamente en el fichero: ";
+
+            for (int i = 1; i <= cantidad; i++) {
 
                 System.out.println("--Escribe los datos del vehiculo a registrar--");
                 System.out.print("Escribe la marca del coche: ");
@@ -48,21 +49,13 @@ public class actividadFicheros {
                 String respuestaPintura = sc.nextLine();
                 boolean pinturaMetalizada = respuestaPintura.equalsIgnoreCase("si");
 
-                /*while (!respuestaPintura.equals("si") && !respuestaPintura.equals("no")) {
-                    System.out.println("Respuesta no válida. Por favor, escribe 'si' o 'no'.");
-                    respuestaPintura = sc.nextLine().trim().toLowerCase();
-                }*/
-
                 if (!respuestaPintura.equalsIgnoreCase("si") && !respuestaPintura.equalsIgnoreCase("no")) {
-                    System.out.println("La respuesta no ha sido (si/no); se añadirá un valor por defecto (no).");
+                    System.out.println("La respuesta no ha sido (si/no); se asignara un valor por defecto (no).");
                 }
-
 
                 System.out.print("Escribe el año de adquisición: ");
                 int año = sc.nextInt();
-
                 sc.nextLine();
-
 
                 dos.writeUTF(marca);
                 dos.writeUTF(modelo);
@@ -70,11 +63,11 @@ public class actividadFicheros {
                 dos.writeBoolean(pinturaMetalizada);
                 dos.writeInt(año);
 
-                i++;
+                System.out.printf("El Vehiculo ( %s  %s ) ha sido registrado correctamente %n", marca, modelo);
                 System.out.println();
             }
 
-            System.out.println("Datos escritos correctamente en: " + ruta.toAbsolutePath());
+            System.out.println(mensajeFichero + ruta.toAbsolutePath() + "\n");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,18 +89,16 @@ public class actividadFicheros {
                     boolean pinturaMetalizada = dis.readBoolean();
                     int año = dis.readInt();
 
-
                     //System.out.printf("Marca: %s, Modelo: %s, Color: %s, Pintura Metalizada %s, año: %d%n%n", marca, modelo, color, (pinturaMetalizada ? "Sí" : "No"), año);
 
-                    System.out.printf("Marca: %s, Modelo: %s, Color: %s%n", marca, modelo, color);
+                    System.out.printf("Marca: %-8s  Modelo: %-12s  Color: %-8s%n", marca, modelo, color);
 
 
                 } catch (EOFException e) {
-                    System.out.println("\nFin del fichero");
+                    System.out.println("\nFin de lectura");
                     break;
                 }
             }
-
 
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
@@ -120,5 +111,13 @@ public class actividadFicheros {
         String nombreFichero = sc.nextLine();
         System.out.println();
         return Path.of(System.getProperty("user.dir"), nombreFichero);
+    }
+
+    private static int cantidadVehiculos() {
+        System.out.print("Introduce la cantidad de vehículos a añadir: ");
+        int cantidadEmpleados = sc.nextInt();
+        System.out.println();
+        sc.nextLine();
+        return cantidadEmpleados;
     }
 }

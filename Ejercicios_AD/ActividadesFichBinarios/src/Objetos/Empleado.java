@@ -3,7 +3,6 @@ package Objetos;
 import java.io.Serial;
 import java.io.Serializable;
 
-
 public class Empleado implements Serializable {
 
     @Serial
@@ -21,7 +20,7 @@ public class Empleado implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Nombre: %s      Depto: %d      Salario: %.2f €", nombre, departamento, salario);
+        return String.format("Nombre: %-10s  Depto: %-5d  Salario: %-5.2f €", nombre, departamento, salario);
     }
 
 
