@@ -216,6 +216,6 @@ fun ejercicio15() {
 
 fun ejercicio16(){
 //esto es una prueba de fedora
-
+//lo solucionamos? esto es un poco raro de todas maneras
 
 }
