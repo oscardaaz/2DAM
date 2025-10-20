@@ -203,11 +203,17 @@ fun ejercicio15() {
     do {
         print("Introduce el precio de la venta $contador (Para salir introduce '*' ): ")
         val auxiliar = readln()
-        if (auxiliar == "*".trim()) {println("Saliendo...") ; break }
+        if (auxiliar == "*".trim()) {
+            println("Saliendo..."); break
+        }
         val cantidad = auxiliar.toDouble()
         total += cantidad
         contador++
-    }while(auxiliar != "*".trim())
+    } while (auxiliar != "*".trim())
     val redondeado = String.format("\nEl precio total asciende a %.2f €", total)
     println(redondeado)
+}
+
+fun ejercicio16(){
+
 }
