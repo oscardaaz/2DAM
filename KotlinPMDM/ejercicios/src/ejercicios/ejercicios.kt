@@ -1,10 +1,5 @@
 package ejercicios
 
-import com.sun.jdi.IntegerValue
-import java.util.Locale
-import java.util.Locale.getDefault
-
-
 fun main() {
 
     //ejercicio1()
@@ -17,7 +12,11 @@ fun main() {
     //ejercicio8()
     //ejercicio9()
     //ejercicio10()
-    ejercicio11()
+    //ejercicio11()
+    //ejercicio12()
+    //ejercicio13()
+    //ejercicio14()
+    ejercicio15()
 }
 
 fun ejercicio1() {
@@ -54,7 +53,7 @@ fun ejercicio4() {
     val a = readln().toInt()
     print("Introduce un numero b: ")
     val b = readln().toInt()
-    val suma = a + b;
+    //val suma = a + b;
     if (a > b) println("El numero mayor es el a: $a")
     else if (a == b) println("Los numeros $a y $b son iguales")
     else println("El numero mayor es el b: $b")
@@ -97,7 +96,7 @@ fun ejercicio7() {
 }
 
 fun ejercicio8() {
-    var numero = 1;
+    var numero = 1
     println("\nNumeros del 1 al 100 con bucle while: \n")
     while (numero <= 100) {
         println(numero)
@@ -119,31 +118,96 @@ fun ejercicio9() {
 
     for (numero in 100 downTo 1)
         if (numero % 2 == 0 && numero % 3 == 0)
-        println(numero)
+            println(numero)
 }
 
-fun ejercicio10(){
+fun ejercicio10() {
 
     do {
         print("\nIntroduce un numero: ")
         val numero = readln().toInt()
         if (numero >= 0) println("Tu numero es mayor o igual que 0 (cero), Enhorabuena!! ")
         else println("Tu numero es menor de 0. sigue intentandolo: ")
-    }while (numero < 0)
+    } while (numero < 0)
 }
 
-fun ejercicio11(){
+fun ejercicio11() {
 
     val contrasena = "prueba"
     for (i in 2 downTo 0) {
         print("Introduce la contraseña: ")
         val respuesta = readln()
-            if (respuesta.equals(contrasena)){ println("Enhorabuena, acertaste") ;break}
-            else println("Has fallado. Te quedan $i intentos")
+        if (respuesta.equals(contrasena)) {
+            println("Enhorabuena, acertaste"); break
+        } else println("Has fallado. Te quedan $i intentos")
         if (i == 0) println("Numero maximo de intentos superado")
     }
+}
 
+fun ejercicio12() {
 
+    print("\nIntroduce un mes (con numero del 1 al 12): ")
+    val mes = readln().toInt()
+    val respuesta = when (mes) {
+        1 -> "El mes de enero tiene 31 dias"
+        2 -> "El mes de febrero tiene 28 o 29 dias si es bisiesto"
+        3 -> "El mes de marzo tiene 31 dias"
+        4 -> "El mes de abril tiene 30 dias"
+        5 -> "El mes de mayo tiene 31 dias"
+        6 -> "El mes de junio tiene 30 dias"
+        7 -> "El mes de julio tiene 31 dias"
+        8 -> "El mes de agosto tiene 31 dias"
+        9 -> "El mes de septiembre tiene 30 dias"
+        10 -> "El mes de octubre tiene 31 dias"
+        11 -> "El mes de noviembre tiene 30 dias"
+        12 -> "El mes de diciembre tiene 31 dias"
+        else -> "Mes invalido\n"
+    }
+    println("\n$respuesta")
+}
 
+fun ejercicio13() {
+    print("\nIntroduce un dia de la semana: ")
+    val dia = readln().trim().lowercase()
 
+    if (dia.equals("sabado") || dia.equals("domingo"))
+        println("Es fin de semana disfrutalo")
+    else println("Es un dia laborable, a currar")
+}
+
+fun ejercicio14() {
+    print("\nCuantas ventas ha realizado el comercial en los ultimos 15 dias: ")
+    val ventas = readln().trim().toInt()
+    //var contador = 1
+    var total = 0.0
+    /*do {
+        println("Introduce el precio de la venta $contador")
+        val cantidad = readln().toDouble()
+        total += cantidad
+        contador++
+    }while(contador <= ventas)*/
+
+    for (i in 1..ventas) {
+        println("Introduce el precio de la venta $i ")
+        val cantidad = readln().toDouble()
+        total += cantidad
+    }
+    val redondeado = String.format("El precio total asciende a %.2f €", total)
+    println(redondeado)
+}
+
+fun ejercicio15() {
+
+    var contador = 1
+    var total = 0.0
+    do {
+        print("Introduce el precio de la venta $contador (Para salir introduce '*' ): ")
+        val auxiliar = readln()
+        if (auxiliar == "*".trim()) {println("Saliendo...") ; break }
+        val cantidad = auxiliar.toDouble()
+        total += cantidad
+        contador++
+    }while(auxiliar != "*".trim())
+    val redondeado = String.format("\nEl precio total asciende a %.2f €", total)
+    println(redondeado)
 }
