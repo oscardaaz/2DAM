@@ -31,6 +31,7 @@ fun ejercicio2() {
 
     val nombre = "Oscar"
     println("Bienvenido, $nombre")
+
 }
 
 fun ejercicio3() {
@@ -43,7 +44,7 @@ fun ejercicio3() {
 
 fun ejercicio4() {
 
-
+ //asdasd
 }
 
 fun ejercicio5() {
