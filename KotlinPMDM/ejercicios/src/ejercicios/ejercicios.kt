@@ -219,3 +219,7 @@ fun ejercicio16(){
 //lo solucionamos? esto es un poco raro de todas maneras
 
 }
+
+fun ejercicio17(){
+    //esto es otra prueba
+}
