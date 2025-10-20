@@ -222,4 +222,9 @@ fun ejercicio16(){
 
 fun ejercicio17(){
     //esto es otra prueba
+
+}
+
+fun ejercicio18(){
+    //otra prueba
 }
