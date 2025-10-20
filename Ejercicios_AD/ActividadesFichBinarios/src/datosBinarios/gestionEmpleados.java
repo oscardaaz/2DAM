@@ -9,28 +9,21 @@ import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Scanner;
 
-
 public class gestionEmpleados {
 
     private static final Scanner sc = new Scanner(System.in).useLocale(Locale.US);
 
     public static void main(String[] args) {
-        //Actividades ficheros binarios (1.6)
+        //Actividades ficheros binarios (1.6) (Empleados)
 
         escribirEmpleado();
-        //leerEmpleados();
-    }
-
-    private static int cantidadEmpleados(){
-        System.out.println("Introduce la cantidad de empleados a añadir");
-        int cantidadEmpleados = sc.nextInt();
-        sc.nextLine();
-        return cantidadEmpleados;
+        leerEmpleados();
     }
 
     private static void escribirEmpleado() {
 
-        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir: ");
+        Path ruta = obtenerRutaFichero("Escribe el nombre del fichero a escribir o sobreescribir" +
+                " (Recuerda que sea extension .dat o .bin): ");
         boolean existe = Files.exists(ruta);
 
         try (OutputStream os = Files.newOutputStream(
@@ -44,8 +37,8 @@ public class gestionEmpleados {
             int cantidadEmpleados = existe ? cantidadEmpleados() : 3;
             String mensaje = existe ? " a añadir: "
                                     : ": " ;
-            String mensajeFichero = existe  ? "\nFichero sobreescrito correctamente"
-                                            : "\nFichero escrito correctamente" ;
+            String mensajeFichero = existe  ? "Empleados añadidos a fichero correctamente en: " +ruta.toAbsolutePath() + "\n"
+                                            : "Empleados registrados en fichero escritos correctamente en: " + ruta.toAbsolutePath() +"\n" ;
 
             for (int i = 1; i <= cantidadEmpleados; i++) {
 
@@ -55,20 +48,20 @@ public class gestionEmpleados {
                 System.out.print("Introduce el departamento del empleado" + mensaje);
                 int departamento = sc.nextInt();
 
-                System.out.print("Introduce el salario del empleado"+mensaje);
+                System.out.print("Introduce el salario (Separador de decimales con .) del empleado"+mensaje);
                 double salario = sc.nextDouble();
                 sc.nextLine();
 
                 Empleado empleado = new Empleado(nombre, departamento, salario);
                 oos.writeObject(empleado);
-                System.out.printf("Empleado %d escrito correctamente%n", i);
+                System.out.printf("Empleado %d %s escrito correctamente%n%n", i , nombre);
 
             }
 
             System.out.println(mensajeFichero);
 
         } catch (IOException ioe) {
-            System.err.println("Error al escribir el Empleado " + ioe.getMessage());
+            System.err.println("Error al escribir el Empleado en el fichero: " + ruta.toAbsolutePath() + ioe.getMessage());
         }
     }
 
@@ -78,6 +71,8 @@ public class gestionEmpleados {
         try (InputStream is = Files.newInputStream(ruta);
              ObjectInputStream ois = new ObjectInputStream(is)) {
             //int contador = 1;
+            System.out.println("Empleados registrados: \n");
+
             while (true) {
                 try {
 
@@ -98,7 +93,7 @@ public class gestionEmpleados {
 
 
         } catch (IOException e) {
-            System.err.println("Error al leer el Empleado " + e.getMessage());
+            System.err.println("Error al leer el fichero: "+ ruta.toAbsolutePath() + e.getMessage());
         }
     }
 
@@ -107,6 +102,14 @@ public class gestionEmpleados {
         String nombreFichero = sc.nextLine();
         System.out.println();
         return Path.of(System.getProperty("user.dir"),nombreFichero);
+    }
+
+    private static int cantidadEmpleados(){
+        System.out.print("Introduce la cantidad de empleados a añadir: ");
+        int cantidadEmpleados = sc.nextInt();
+        System.out.println();
+        sc.nextLine();
+        return cantidadEmpleados;
     }
 
     private static class ObjectOutputStreamSinCabecera extends ObjectOutputStream{
