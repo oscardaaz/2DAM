@@ -215,17 +215,13 @@ fun ejercicio15() {
 }
 
 fun ejercicio16(){
-//esto es una prueba de fedora
-//lo solucionamos? esto es un poco raro de todas maneras
-//asdadasd
+
 }
 
 fun ejercicio17(){
-    //esto es otra prueba
 
 }
 
 fun ejercicio18(){
-    //otra prueb
-    //definitiva y a dormir
+
 }
