@@ -219,12 +219,28 @@ fun ejercicio15() {
 
 fun ejercicio16(){
 
-    print("Introduce un numero entero: ")
+    print("\nIntroduce un numero entero: ")
     val a = readln().toInt()
     print("Introduce un numero entero: ")
     val b = readln().toInt()
-    print("Numeros aleatorios: ${Random.nextInt()(a,b)}")
-
+    var contador = 1
+    println("\n10 numeros aleatorios entre $a y $b :")
+    do{
+        val aleatorio: Int
+        if (a <= b) {
+            aleatorio = Random.nextInt(a, b + 1) //Incluye inicio excluye final
+            //val aleatorio2 = (a..b).random() //Incluye ambos rangos
+            //println("Numero $contador : $aleatorio")
+        } else {
+            aleatorio = Random.nextInt(b, a + 1)
+            //println("Numero $contador : $aleatorio")
+        }
+        //println("Numero $contador : $aleatorio")
+        println(String.format("Numero %-3d: %-3d",contador,aleatorio))
+        //val mensaje = String.format("Numero %-3d %-3d%n",contador,aleatorio)
+        //print(mensaje)
+        contador++
+    }while (contador <= 10)
 }
 
 fun ejercicio17(){
