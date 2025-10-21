@@ -16,7 +16,8 @@ fun main() {
     //ejercicio12()
     //ejercicio13()
     //ejercicio14()
-    ejercicio15()
+    //ejercicio15()
+    ejercicio16()
 }
 
 fun ejercicio1() {
@@ -203,7 +204,7 @@ fun ejercicio15() {
     do {
         print("Introduce el precio de la venta $contador (Para salir introduce '*' ): ")
         val auxiliar = readln()
-        if (auxiliar == "*".trim()) {
+        if (auxiliar.trim() == "*") {
             println("Saliendo..."); break
         }
         val cantidad = auxiliar.toDouble()
@@ -215,6 +216,11 @@ fun ejercicio15() {
 }
 
 fun ejercicio16(){
+
+    print("Introduce un numero entero: ")
+    val a = readln().toInt()
+    print("Introduce un numero entero: ")
+    val b = readln().toInt()
 
 }
 
