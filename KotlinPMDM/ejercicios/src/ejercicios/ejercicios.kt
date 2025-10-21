@@ -1,5 +1,7 @@
 package ejercicios
 
+import kotlin.random.Random
+
 fun main() {
 
     //ejercicio1()
@@ -221,6 +223,7 @@ fun ejercicio16(){
     val a = readln().toInt()
     print("Introduce un numero entero: ")
     val b = readln().toInt()
+    print("Numeros aleatorios: ${Random.nextInt()(a,b)}")
 
 }
 
