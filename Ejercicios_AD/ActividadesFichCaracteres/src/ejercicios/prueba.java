@@ -8,11 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Locale;
 import java.util.Scanner;
 
-public class actividad_1_8 {
+public class prueba {
 
-    private static final Scanner sc = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in).useLocale(Locale.US);
     private static final Path rutaFichero = Path.of("deportistas.txt");
 
     public static void main(String[] args) {
@@ -73,21 +74,40 @@ public class actividad_1_8 {
 
         System.out.println("\n--- RESULTADOS ---\n");
         try (Scanner sc = new Scanner(Files.newBufferedReader(rutaFichero,
-                StandardCharsets.UTF_8 ))) {
-            double salarioTotal = 0;
-            String linea;
+                StandardCharsets.UTF_8))) {
+            double estaturaTotal = 0;
             int contador = 0;
-            while (sc.hasNextLine()) {
 
-                linea = sc.nextLine();
-                String[] estatura = linea.split(";");
-                System.out.println(linea);
+            double estatura = 0;
+            while (sc.hasNextLine()) {
+                String linea = sc.nextLine();
+
+                // Asumiendo que los datos están separados por ";"
+                String[] partes = linea.split(";");
+                estatura = 0;
+                if (partes.length >= 3) {
+                    String estaturaAuxiliar = partes[2].trim();
+                    try {
+                        estatura = Double.parseDouble(estaturaAuxiliar);
+                        estaturaTotal += estatura;
+
+
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error al convertir estatura a double: " + estaturaAuxiliar);
+                    }
+                } else {
+                    System.out.println("Línea mal formada: " + linea);
+
+                }
+
                 contador++;
             }
+
+            System.out.println("Estatura del deportista: " + estatura / contador);
             System.out.println("Total de deportistas: " + contador);
 
         } catch (IOException e) {
-            System.err.println("IOE generada en leerConScanner " + e.getMessage());
+            System.err.println("IOE generada en leerConScanner (cálculo): " + e.getMessage());
         }
     }
 
