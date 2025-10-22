@@ -1,0 +1,2 @@
+Error: Could not find or load main class LanzadorProcesos.Sumador
+Caused by: java.lang.ClassNotFoundException: LanzadorProcesos.Sumador
