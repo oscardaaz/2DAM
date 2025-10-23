@@ -4,12 +4,10 @@ import Objetos.Deportista;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -55,8 +53,8 @@ public class actividad_1_8 {
                 Deportista deportista = new Deportista(nombre, edad, estatura);
                 //Write no escribe objetos solo Strings
                 //pw.write(String.valueOf(deportista)); //Y uso el salto de linea en el toString()
-                //pw.write(deportista.toString()); //Varias opciones con write pero hay que pasarlo a String
-                //pw.write(String.valueOf(deportista)); //Varias opciones con write pero hay que pasarlo a String
+                //pw.write(deportista.toString()); //Varias opciones con write, pero hay que pasarlo a String
+                //pw.write(String.valueOf(deportista)); //Varias opciones con write, pero hay que pasarlo a String
                 pw.println(deportista); //usando este me ahorro el String.ValueOf(), ya que pw.println escribe objetos
                 //Quitar en el toString el salto de linea sino out of bounds ya que hace doble \n
             }
@@ -93,7 +91,6 @@ public class actividad_1_8 {
                     nombreMax = nombre;
                 }
                 contador++;
-
             }
             if (contador == 0) {
                 System.out.println("No se encontraron datos");
