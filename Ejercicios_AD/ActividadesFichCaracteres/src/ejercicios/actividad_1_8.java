@@ -4,10 +4,12 @@ import Objetos.Deportista;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -80,6 +82,7 @@ public class actividad_1_8 {
                 System.out.println(linea);
 
                 String[] auxiliar = linea.trim().split(" ");
+                //System.out.println(Arrays.toString(auxiliar));
                 double estaturaAux = Double.parseDouble(auxiliar[2]);
                 double edadAux = Double.parseDouble(auxiliar[1]);
                 String nombre = auxiliar[0];
@@ -90,6 +93,7 @@ public class actividad_1_8 {
                     nombreMax = nombre;
                 }
                 contador++;
+
             }
             if (contador == 0) {
                 System.out.println("No se encontraron datos");

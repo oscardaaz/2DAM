@@ -1,4 +1,2 @@
-Oscar 27 1.83
-Miguel 34 1.70
-Jorge 31 1.75
-oscar 12 12.00oscar 12 12.00
+Jorge 20 1.60
+Oscar 25 1.98
