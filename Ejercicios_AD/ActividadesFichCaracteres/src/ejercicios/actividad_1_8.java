@@ -53,8 +53,10 @@ public class actividad_1_8 {
                 Deportista deportista = new Deportista(nombre, edad, estatura);
                 //Write no escribe objetos solo Strings
                 //pw.write(String.valueOf(deportista)); //Y uso el salto de linea en el toString()
-                pw.println(deportista); //usando este me ahorro el String.ValueOf, ya que pw.println escribe objetos
-                //Quitar en el toString el salto de linea sino out of bounds
+                //pw.write(deportista.toString()); //Varias opciones con write pero hay que pasarlo a String
+                //pw.write(String.valueOf(deportista)); //Varias opciones con write pero hay que pasarlo a String
+                pw.println(deportista); //usando este me ahorro el String.ValueOf(), ya que pw.println escribe objetos
+                //Quitar en el toString el salto de linea sino out of bounds ya que hace doble \n
             }
             sc.close();
             System.out.println("\nFichero escrito correctamente.");
@@ -89,8 +91,11 @@ public class actividad_1_8 {
                 }
                 contador++;
             }
+            if (contador == 0) {
+                System.out.println("No se encontraron datos");
+            }
+            System.out.println("\n--- RESULTADOS ---");
             if (contador > 0) {
-                System.out.println("\n--- RESULTADOS ---");
                 System.out.printf("Total de deportistas: %d%n", contador);
                 System.out.printf("Media de edad: %.2f%n", edadTotal / contador);
                 System.out.printf("Deportista más alto: %s (%.2f)%n", nombreMax, estaturaMax);
