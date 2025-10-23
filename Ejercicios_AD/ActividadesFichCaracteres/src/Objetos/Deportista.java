@@ -14,29 +14,8 @@ public class Deportista {
 
     @Override
     public String toString() {
-        return String.format(Locale.US, "%s;%d;%.2f%n", nombre, edad, estatura);
-    }
-    public String getNombre() {
-        return nombre;
+        //Poner un %n si uso el pw.write y si uso el pw.println no es necesario
+        return String.format(Locale.US, "%s %d %.2f", nombre, edad, estatura);
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
-
-    public Double getEstatura() {
-        return estatura;
-    }
-
-    public void setEstatura(Double estatura) {
-        this.estatura = estatura;
-    }
 }

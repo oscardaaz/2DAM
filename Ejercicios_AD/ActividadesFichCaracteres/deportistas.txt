@@ -1,2 +1,2 @@
-Oscar;12;1.65
-Jorge;12;5.45
+Oscar 12 1.98
+Jorge 27 2.00
