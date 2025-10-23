@@ -4,7 +4,7 @@ import java.io.IOException;
 public class ejecutador1 {
     public static void main(String[] args) {
         File directorio = new File("out/artifacts/ejerciciosPSP_jar");
-        System.out.println("\nDirectorio absoluto: " + directorio.getAbsolutePath());
+        System.out.print("\nDirectorio absoluto: " + directorio.getAbsolutePath());
 
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", "ejerciciosPSP.jar");
         pb.directory(directorio);
@@ -13,10 +13,10 @@ public class ejecutador1 {
         try {
             Process p = pb.start();
             int exitCode = p.waitFor();
-            System.out.println("\nProceso terminado con código: " + exitCode);
+            System.out.println("\nProceso terminado con éxito " + exitCode);
         } catch (IOException | InterruptedException e) {
             System.err.println("Error ejecutando el proceso: " + e.getMessage());
-            e.printStackTrace();
+
         }
     }
 }
