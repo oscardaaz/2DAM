@@ -1,23 +1,30 @@
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ejercicio1 {
 
-    private static final Scanner sc = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in).useLocale(Locale.US);
 
     public static void main(String[] args) {
 
-        int a, b, suma;
-        System.out.print("\nIntroduce un numero entero: ");
-        a = sc.nextInt();
+        int a, b;
 
-        System.out.print("Introduce un numero entero: ");
-        b = sc.nextInt();
+        a = leerEntero("\nIntroduce un numero entero: ");
+        b = leerEntero("Introduce otro numero entero: ");
 
-        suma = a + b ;
-        System.out.printf("%nLa suma de %d + %d es: %d " ,a,b,suma);
+        int suma = a + b;
+        System.out.printf("%nLa suma de %d + %d es: %d%n", a, b, suma);
 
+        sc.close();
+    }
+
+    private static int leerEntero(String mensaje) {
+        System.out.print(mensaje);
+        while (!sc.hasNextInt()) {
+            System.out.println("Error: No es un numero entero valido. Intenta de nuevo.");
+            sc.next();
+            System.out.print(mensaje);
+        }
+        return sc.nextInt();
     }
 }
