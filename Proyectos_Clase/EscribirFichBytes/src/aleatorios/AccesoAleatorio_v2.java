@@ -23,7 +23,8 @@ public class AccesoAleatorio_v2 {
                     + BYTES_INT
                     + BYTES_DOUBLE; //56 Bytes en total
 
-    private static final Path RUTA = Path.of("src/aleatorios","aleatorios_v2.dat");
+    private static final Path RUTA = Path.of("src/aleatorios", "aleatorios_v2.dat");
+
     public static void main(String[] args) {
         try {
             if (RUTA.getParent() != null) Files.createDirectories(RUTA.getParent());
@@ -38,7 +39,7 @@ public class AccesoAleatorio_v2 {
             //Leer directamente el 5º registro y mostrarlo por consola
             //leerRegistro(5);
 
-            //Actualizar el salario del 3er registro y mostrarlo
+            //Actualizar el salario del 3.er registro y mostrarlo
             //actualizarSalario(3);
 
             leerRegistros();
@@ -49,16 +50,37 @@ public class AccesoAleatorio_v2 {
 
     }
 
+    private static void escribirCadenaFija(RandomAccessFile raf, String ape, int longitud) {
+
+        if (ape == null) ape = "";
+        StringBuilder sb = new StringBuilder(ape);
+        //Si el apellido es mayor que el tamaño definido (20 caracteres),
+        // lo "truncamos"
+        if (sb.length() > longitud) sb.setLength(longitud);
+            // Si no, rellenamos con espacios hasta longitud
+        else while (sb.length() < longitud) sb.append(' ');
+
+        for (int i = 0; i < longitud; i++) {
+            try {
+                raf.writeChar(sb.charAt(i));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+
     private static void modificarDepartamento(int numEmpleado) {
         int dept;
 
-        try (Scanner sc = new Scanner(System.in); RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(),"rw")){
+        try (Scanner sc = new Scanner(System.in); RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
 
             System.out.println("Introduce el nuevo departamento: ");
             int nuevoDepartamento = sc.nextInt();
 
             //Coloco el puntero
-            long posicion = (long) TAM_REGISTRO * (numEmpleado - 1) + BYTES_INT + (LONG_APELLIDO*BYTES_CHAR);
+            long posicion = (long) TAM_REGISTRO * (numEmpleado - 1) + BYTES_INT + (LONG_APELLIDO * BYTES_CHAR);
 
             raf.seek(posicion);
 
@@ -69,25 +91,25 @@ public class AccesoAleatorio_v2 {
         } catch (FileNotFoundException e) {
             System.err.println("Fichero no encontrado " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error de E/S al leer " +e.getMessage());
+            System.err.println("Error de E/S al leer " + e.getMessage());
         }
 
     }
 
-    private static void escribirRegistros(){
-        String[] apellidos = {"Fernández","Gil","Nuñez","otro","otro2","otro 3"};
-        int[] dept = {10,20,30,10,20,30};
-        double[] salarios = {1000.45,1100.00,25000.00,1500.00,1890.50,2789.23};
+    private static void escribirRegistros() {
+        String[] apellidos = {"Fernández", "Gil", "Nuñez", "otro", "otro2", "otro 3"};
+        int[] dept = {10, 20, 30, 10, 20, 30};
+        double[] salarios = {1000.45, 1100.00, 25000.00, 1500.00, 1890.50, 2789.23};
 
-        try(RandomAccessFile raf = new RandomAccessFile(
-                RUTA.toFile(),"rw")){
+        try (RandomAccessFile raf = new RandomAccessFile(
+                RUTA.toFile(), "rw")) {
 
             //Si quiero sobreescribir...
             raf.setLength(0); // "Borramos" el contenido del fichero
 
             for (int i = 0; i < apellidos.length; i++) {
-                raf.writeInt(i+1);
-                raf.writeUTF(apellidos[i]);
+                raf.writeInt(i + 1);
+                escribirCadenaFija(raf, apellidos[i], LONG_APELLIDO );
                 raf.writeInt(dept[i]);
                 raf.writeDouble(salarios[i]);
 
@@ -99,31 +121,31 @@ public class AccesoAleatorio_v2 {
 
     }
 
-    private static void leerRegistros(){
+    private static void leerRegistros() {
 
         int id, dept;
         String apellido;
         double salario;
-        try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(),"r")){
+        try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "r")) {
             //Nos colocamos al inicio del fichero
             raf.seek(0);
             //long posPuntero = 0;
             long posPuntero = raf.getFilePointer(); //Equivalente a long posPuntero = 0; Coge el dato de la variable;
 
-            while (posPuntero != raf.length()){
+            while (posPuntero != raf.length()) {
                 id = raf.readInt();
                 apellido = raf.readUTF();
                 dept = raf.readInt();
                 salario = raf.readDouble();
-                System.out.printf(Locale.US,"Id: %-3d, Apellido: %-9s, Dept: %-3d, Salario: %-12.2f%n"
-                        ,id ,apellido ,dept, salario);
+                System.out.printf(Locale.US, "Id: %-3d, Apellido: %-9s, Dept: %-3d, Salario: %-12.2f%n"
+                        , id, apellido, dept, salario);
                 posPuntero = raf.getFilePointer();
 
             }
         } catch (FileNotFoundException e) {
             System.err.println("Fichero no encontrado " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error de E/S al leer " +e.getMessage());
+            System.err.println("Error de E/S al leer " + e.getMessage());
         }
 
 
