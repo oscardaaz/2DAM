@@ -109,9 +109,7 @@ public class AccesoAleatorio_v2 {
 
     private static void actualizarSalario(int numEmpleado) {
 
-
         try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
-
 
             //Coloco el puntero
             long posicion = (long) TAM_REGISTRO * (numEmpleado - 1) + (BYTES_INT * 2) + (LONG_APELLIDO * BYTES_CHAR);
