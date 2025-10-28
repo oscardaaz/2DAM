@@ -29,23 +29,53 @@ public class AccesoAleatorio_v2 {
         try {
             if (RUTA.getParent() != null) Files.createDirectories(RUTA.getParent());
 
-            escribirRegistros();
+            //escribirRegistros();
 
-            leerRegistros();
-            modificarDepartamento(2);
+            leerRegistrosCadenaFija();
+            System.out.println();
+            //modificarDepartamento(3);
 
-            //sumarSalarios();
+            //modificarDepartamento(4);
+
 
             //Leer directamente el 5º registro y mostrarlo por consola
             //leerRegistro(5);
 
             //Actualizar el salario del 3.er registro y mostrarlo
-            //actualizarSalario(3);
 
-            leerRegistros();
+            //Subir un 10%
+            actualizarSalario(3);
+
+            //sumarSalarios();
+            System.out.println();
+            leerRegistrosCadenaFija();
 
         } catch (IOException e) {
             System.err.println("Error de I/O en el main");
+        }
+
+    }
+
+    private static void actualizarSalario(int numEmpleado) {
+
+
+        try (Scanner sc = new Scanner(System.in); RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
+
+
+            //Coloco el puntero
+            long posicion = (long) TAM_REGISTRO * (numEmpleado - 1) + (BYTES_INT * 2) + (LONG_APELLIDO * BYTES_CHAR);
+            raf.seek(posicion);
+
+            double salario = raf.readDouble();
+            salario = salario * 1.10;
+
+            raf.seek(posicion);
+            raf.writeDouble(salario);
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Fichero no encontrado " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error de E/S al leer " + e.getMessage());
         }
 
     }
@@ -72,12 +102,13 @@ public class AccesoAleatorio_v2 {
 
 
     private static void modificarDepartamento(int numEmpleado) {
-        int dept;
 
         try (Scanner sc = new Scanner(System.in); RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
 
-            System.out.println("Introduce el nuevo departamento: ");
+            System.out.print("Introduce el nuevo departamento: ");
             int nuevoDepartamento = sc.nextInt();
+            sc.nextLine();
+            System.out.println();
 
             //Coloco el puntero
             long posicion = (long) TAM_REGISTRO * (numEmpleado - 1) + BYTES_INT + (LONG_APELLIDO * BYTES_CHAR);
@@ -86,7 +117,6 @@ public class AccesoAleatorio_v2 {
 
             //Escribimos
             raf.writeInt(nuevoDepartamento);
-
 
         } catch (FileNotFoundException e) {
             System.err.println("Fichero no encontrado " + e.getMessage());
@@ -109,7 +139,7 @@ public class AccesoAleatorio_v2 {
 
             for (int i = 0; i < apellidos.length; i++) {
                 raf.writeInt(i + 1);
-                escribirCadenaFija(raf, apellidos[i], LONG_APELLIDO );
+                escribirCadenaFija(raf, apellidos[i], LONG_APELLIDO);
                 raf.writeInt(dept[i]);
                 raf.writeDouble(salarios[i]);
 
@@ -121,7 +151,12 @@ public class AccesoAleatorio_v2 {
 
     }
 
-    private static void leerRegistros() {
+    /**
+     * v2 Lee todos los registros
+     * utilizando leerCadenaFija para el apellido
+     * en lugar de readUTF.
+     */
+    private static void leerRegistrosCadenaFija() {
 
         int id, dept;
         String apellido;
@@ -134,7 +169,8 @@ public class AccesoAleatorio_v2 {
 
             while (posPuntero != raf.length()) {
                 id = raf.readInt();
-                apellido = raf.readUTF();
+                //apellido = raf.readUTF();
+                apellido = leerCadenaFija(raf, LONG_APELLIDO);
                 dept = raf.readInt();
                 salario = raf.readDouble();
                 System.out.printf(Locale.US, "Id: %-3d, Apellido: %-9s, Dept: %-3d, Salario: %-12.2f%n"
@@ -150,4 +186,19 @@ public class AccesoAleatorio_v2 {
 
 
     }
+
+    private static String leerCadenaFija(RandomAccessFile raf, int longApellido) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < longApellido; i++) {
+            try {
+                sb.append(raf.readChar());
+            } catch (IOException e) {
+                System.err.println("Error de E/S al leer " + e.getMessage());
+            }
+        }
+        return sb.toString();
+
+    }
+
 }
