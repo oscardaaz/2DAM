@@ -31,7 +31,7 @@ public class AccesoAleatorio_v2 {
 
             //escribirRegistros();
 
-            leerRegistrosCadenaFija();
+            //leerRegistrosCadenaFija();
             System.out.println();
             //modificarDepartamento(3);
 
@@ -44,11 +44,11 @@ public class AccesoAleatorio_v2 {
             //Actualizar el salario del 3.er registro y mostrarlo
 
             //Subir un 10%
-            actualizarSalario(3);
+            //actualizarSalario(3);
 
-            //sumarSalarios();
+            sumarSalarios();
             System.out.println();
-            leerRegistrosCadenaFija();
+            //leerRegistrosCadenaFija();
 
         } catch (IOException e) {
             System.err.println("Error de I/O en el main");
@@ -56,10 +56,61 @@ public class AccesoAleatorio_v2 {
 
     }
 
+    private static void sumarSalarios() {
+
+//        try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
+//
+//            double salarioTotal = 0;
+//
+//            for (int i = 1; i <= raf.length() ; i++) {
+//
+//                long posicion = (long) TAM_REGISTRO * (i - 1) + (BYTES_INT * 2) + (LONG_APELLIDO * BYTES_CHAR);
+//                raf.seek(posicion);
+//
+//                double salario = raf.readDouble();
+//
+//                salarioTotal += salario;
+//                //System.out.println(salarioTotal);
+//
+//            }
+//            System.out.printf("El salario total es: %.2f",salarioTotal);
+//        } catch (FileNotFoundException e) {
+//            System.err.println("Fichero no encontrado " + e.getMessage());
+//        } catch (IOException e) {
+//            System.err.println("Error de E/S al leer " + e.getMessage());
+//        }
+
+        double salario;
+        double salarioTotal = 0;
+        try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "r")) {
+
+
+            long posicion = 0;
+            int i = 1;
+            while (i != raf.length()) {
+
+                posicion = (long) TAM_REGISTRO * (i - 1) + (BYTES_INT * 2) + (LONG_APELLIDO * BYTES_CHAR);
+                raf.seek(posicion);
+                salario = raf.readDouble();
+
+                salarioTotal += salario;
+                i++;
+                posicion = raf.getFilePointer();
+                if (posicion == raf.length()) break;
+            }
+            System.out.printf(Locale.US, "Salario total: %.2f%n", salarioTotal);
+        } catch (FileNotFoundException e) {
+            System.err.println("Fichero no encontrado " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error de E/S al leer " + e.getMessage());
+        }
+
+    }
+
     private static void actualizarSalario(int numEmpleado) {
 
 
-        try (Scanner sc = new Scanner(System.in); RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
+        try (RandomAccessFile raf = new RandomAccessFile(RUTA.toFile(), "rw")) {
 
 
             //Coloco el puntero
@@ -70,7 +121,7 @@ public class AccesoAleatorio_v2 {
             salario = salario * 1.10;
 
             raf.seek(posicion);
-            raf.writeDouble(salario);
+            raf.writeDouble(Math.round(salario * 100) / 100.0);
 
         } catch (FileNotFoundException e) {
             System.err.println("Fichero no encontrado " + e.getMessage());
