@@ -1,5 +1,8 @@
 package ejercicios
 
+import java.sql.SQLOutput
+import kotlin.math.exp
+import kotlin.math.pow
 import kotlin.random.Random
 
 fun main() {
@@ -19,7 +22,13 @@ fun main() {
     //ejercicio13()
     //ejercicio14()
     //ejercicio15()
-    ejercicio16()
+    //ejercicio16()
+    //ejercicio17()
+    //ejercicio18()
+    //ejercicio19()
+    //ejercicio20()
+    //ejercicio21()
+    ejercicio22()
 }
 
 fun ejercicio1() {
@@ -31,7 +40,6 @@ fun ejercicio1() {
     println("Multiplicacion:  ${a * b}")
     println("Division:  ${a / b}")
     println("Modulo:  ${a % b}")
-
 
 }
 
@@ -217,15 +225,15 @@ fun ejercicio15() {
     println(redondeado)
 }
 
-fun ejercicio16(){
+fun ejercicio16() {
 
     print("\nIntroduce un numero entero: ")
     val a = readln().toInt()
-    print("Introduce un numero entero: ")
+    print("Introduce otro numero entero: ")
     val b = readln().toInt()
     var contador = 1
     println("\n10 numeros aleatorios entre $a y $b :")
-    do{
+    do {
         val aleatorio: Int
         if (a <= b) {
             aleatorio = Random.nextInt(a, b + 1) //Incluye inicio excluye final
@@ -236,17 +244,111 @@ fun ejercicio16(){
             //println("Numero $contador : $aleatorio")
         }
         //println("Numero $contador : $aleatorio")
-        println(String.format("Numero %-3d: %-3d",contador,aleatorio))
+        println(String.format("Numero %-3d: %-3d", contador, aleatorio))
         //val mensaje = String.format("Numero %-3d %-3d%n",contador,aleatorio)
         //print(mensaje)
         contador++
-    }while (contador <= 10)
+    } while (contador <= 10)
 }
 
-fun ejercicio17(){
+fun ejercicio17() {
+    println("Introduce cualquier cadena de caracteres: ")
+    val texto = readln()
+
+    var vocales = 0
+    var consonantes = 0
+    var numeros = 0
+    var espacios = 0
+    var i = 0
+
+    for (caracter in texto) {
+
+        if (caracter in "aeiouáéíóúüAEIOUÁÉÍÓÚÜ") {
+            vocales++
+        } else if (caracter.isLetter()) {
+            consonantes++
+        } else if (caracter.isDigit()) {
+            numeros++
+        } else if (caracter.isWhitespace()) {
+            espacios++
+        }
+        i++
+    }
+
+    println("Vocales: $vocales")
+    println("Consonantes: $consonantes")
+    println("Números: $numeros")
+    println("Espacios: $espacios")
+}
+
+
+fun ejercicio18() {
 
 }
 
-fun ejercicio18(){
+fun ejercicio19() {
 
+    print("\nIntroduce el primer numero: ")
+    var a = readln().toDouble()
+    print("Introduce el segundo numero: ")
+    var b = readln().toDouble()
+
+    do {
+        println("\n-- Elige una opcion --")
+        println("1: Suma los operandos")
+        println("2: Resta los operandos")
+        println("3: Multiplica los operandos")
+        println("4: Divide los operandos")
+        println("5: Potencia (1º operando como base y 2º como exponente)")
+        println("6: módulo , resto de la división entre operando1 y operando2.")
+        println("7: pedir 2 operandos nuevos")
+        println("8: Salir")
+        print("Elige una opcion: ")
+        var opcion = readln()
+        when (opcion) {
+
+            "1" -> println("\nLa suma de $a + $b es: ${(a + b)}")
+            "2" -> println("\nLa resta de $a - $b es: ${a - b}")
+            "3" -> println("\nLa multiplicacion de $a * $b es: ${a * b}")
+            "4" -> println("\nLa division de $a / $b es: ${a / b}")
+            "5" -> println("\nLa potencia de ${a.toInt()} elevado a ${b.toInt()} es: ${a.pow(b)}")
+            "6" -> println("\nEl modulo(resto) de $a / $b es: ${a % b}")
+            "7" -> {
+                println("\nIntroduce otro primer numero: ")
+                a = readln().toDouble()
+                println("Introduce otro segundo numero: ")
+                b = readln().toDouble()
+            }
+            "8" -> println("\nSaliendo...")
+            else -> println("Opcion no valida")
+
+        }
+    } while (opcion != "8")
+
+}
+
+fun ejercicio20(){
+    print("Introduce un numero entero mayor que 1: ")
+    val n = readln().toInt()
+    print("La suma desde 1 hasta $n es: ${n*(n+1)/2}")
+}
+
+fun ejercicio21(){
+
+    print("Introduce una cadena de texto: ")
+    var cadena = readln()
+    cadena = cadena.replace(" ", "")
+    print(cadena)
+}
+
+fun ejercicio22(){
+    var cadenaTotal = ""
+    do {
+        println("Introduce un texto, cadena vacía para terminar")
+        val cadena = readln().trim()
+        cadenaTotal += "\t$cadena\n"
+        //cadenaTotal += "\n\t"
+    }while (cadena != "")
+    println("Cadena resultante:\n--------------------------------------------")
+    println(cadenaTotal)
 }
