@@ -28,7 +28,10 @@ fun main() {
     //ejercicio19()
     //ejercicio20()
     //ejercicio21()
-    ejercicio22()
+    //ejercicio22()
+    //ejercicio23()
+    //ejercicio24()
+    ejercicio25()
 }
 
 fun ejercicio1() {
@@ -319,6 +322,7 @@ fun ejercicio19() {
                 println("Introduce otro segundo numero: ")
                 b = readln().toDouble()
             }
+
             "8" -> println("\nSaliendo...")
             else -> println("Opcion no valida")
 
@@ -327,13 +331,13 @@ fun ejercicio19() {
 
 }
 
-fun ejercicio20(){
+fun ejercicio20() {
     print("Introduce un numero entero mayor que 1: ")
     val n = readln().toInt()
-    print("La suma desde 1 hasta $n es: ${n*(n+1)/2}")
+    print("La suma desde 1 hasta $n es: ${n * (n + 1) / 2}")
 }
 
-fun ejercicio21(){
+fun ejercicio21() {
 
     print("Introduce una cadena de texto: ")
     var cadena = readln()
@@ -341,14 +345,77 @@ fun ejercicio21(){
     print(cadena)
 }
 
-fun ejercicio22(){
+fun ejercicio22() {
     var cadenaTotal = ""
     do {
         println("Introduce un texto, cadena vacía para terminar")
         val cadena = readln().trim()
         cadenaTotal += "\t$cadena\n"
         //cadenaTotal += "\n\t"
-    }while (cadena != "")
+    } while (cadena != "")
     println("Cadena resultante:\n--------------------------------------------")
     println(cadenaTotal)
 }
+
+fun ejercicio23() {
+    print("Introduce una frase: ")
+    var cadena = readln().trim()
+    cadena = cadena.replace(" ", "\n")
+    //val auxiliar = ArrayList(cadena.split(" "))
+    println("Palabras sueltas")
+    //for (contenido in auxiliar) println (contenido)
+    println(cadena)
+}
+
+fun ejercicio24() {
+
+    var numero = 0;
+    var sumaTotal = 0;
+    var sumaPositivos = 0;
+    var sumaNegativos = 0;
+    var mayor = 0
+    var menor = 0
+
+    while (numero != -1) {
+
+        println("Introduce un numero (-1 para terminar)")
+        numero = readln().toInt()
+        if (numero == -1)
+            println("Saliendo....")
+        else {
+            sumaTotal += numero
+            if (numero >= 0) sumaPositivos += numero
+            if (numero < 0) sumaNegativos += numero
+            if (numero > mayor) mayor = numero
+            if (numero < menor) menor = numero
+        }
+    }
+    println("El menor es: $menor")
+    println("El mayor es: $mayor")
+    println("La suma es: $sumaTotal")
+    println("La suma de los positivos es: $sumaPositivos")
+    println("La suma de los negativos es: $sumaNegativos")
+}
+
+fun ejercicio25() {
+
+    print("Introduce un numero entero: ")
+    val numero = readln().toInt()
+    var esPrimo = true
+    var i = 2
+    if (numero <= 1) esPrimo = false
+    while (esPrimo) {
+        if (i != numero - 1) {
+            if (numero % i != 0) i++
+            else if (numero % i == 0) esPrimo = false
+
+        } else break
+    }
+    if (esPrimo || numero == 2) {
+        println("\nTu numero es primo")
+    } else {
+        println("\nTu numero no es primo")
+    }
+}
+
+
