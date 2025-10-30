@@ -31,7 +31,10 @@ fun main() {
     //ejercicio22()
     //ejercicio23()
     //ejercicio24()
-    ejercicio25()
+    //ejercicio25()
+    ejercicio26()
+    //ejercicio27()
+    //ejercicio28()
 }
 
 fun ejercicio1() {
@@ -307,7 +310,7 @@ fun ejercicio19() {
         println("7: pedir 2 operandos nuevos")
         println("8: Salir")
         print("Elige una opcion: ")
-        var opcion = readln()
+        val opcion = readln()
         when (opcion) {
 
             "1" -> println("\nLa suma de $a + $b es: ${(a + b)}")
@@ -418,4 +421,84 @@ fun ejercicio25() {
     }
 }
 
+fun ejercicio26() {
+
+    print("Introduce un numero entero: ")
+    val numero1 = readln().toInt()
+    print("Introduce otro numero entero: ")
+    val numero2 = readln().toInt()
+
+    var x = numero1 + 1
+    val y = 2;
+   var esPrimo = true
+   var numeros = 0
+    var primosTotales = 0
+//    while (numero1 < numero2){
+//        do {
+//            val modulo = x % y
+//            if (modulo != 0) esPrimo = true
+//            if (modulo == 0) esPrimo = false
+//            x++
+//        }while (y < x)
+//        if (esPrimo == true)
+//            numeros += x
+//    }
+//    println(numeros)
+
+for (i in numero1..numero2){
+
+    for (j in 2..numero1){
+
+        while (esPrimo) {
+            if (j != numero2 - 1) {
+                if (numero1 % j != 0)
+                else if (numero1 % j == 0) esPrimo = false
+
+            } else break
+        }
+        if (esPrimo) {
+            primosTotales += numero1
+        } else {
+
+        }
+    }
+}
+println("\n $primosTotales")
+
+}
+
+fun ejercicio27() {
+    var numero: Int
+    var contador = 0
+    val cadena = """
+            ------------------------------------------------------------
+            Introduce valor numérico + Enter. Valor numérico + Enter...
+            Cuando quieras terminar, teclea -1 + Enter
+            ------------------------------------------------------------
+        """.trimIndent()
+    println(cadena)
+    do {
+        numero = readln().toInt()
+        if (numero == -1) break
+        contador++
+    } while (true)
+
+    print("Fin, has introducido $contador numeros")
+
+}
+
+fun ejercicio28() {
+
+    println("Introduce una frase: ")
+    val texto = readln().trim()
+    println("\nElige una opcion:")
+    println("( 1 ) Para convertir la frase a mayusculas ")
+    println("( 2 ) Para convertir la frase a minusculas ")
+    print("Opcion: ")
+    val opcion = readln().toInt()
+    if (opcion == 1) println("\nFrase en mayusculas: \n${texto.uppercase()}")
+    else if (opcion == 2) println("\nFrase en minusculas: \n${texto.lowercase()}")
+    else println("\nOpcion erronea, (Terminando programa...)")
+
+}
 
