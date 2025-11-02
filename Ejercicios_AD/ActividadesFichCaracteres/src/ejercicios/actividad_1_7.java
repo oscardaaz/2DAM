@@ -14,10 +14,9 @@ public class actividad_1_7 {
     private static final Path rutaFichero = Path.of("caracteres.txt");
     public static void main(String[] args) {
 
-        //escribirFichero();
+        escribirFichero();
         leerFichero();
-        //escribirPathBuffered();
-        //leerPathBuffered();
+
     }
 
     private static void escribirFichero() {

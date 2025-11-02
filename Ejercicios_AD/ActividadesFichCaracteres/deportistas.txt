@@ -1,2 +1,5 @@
-Jorge 20 1.60
-Oscar 25 1.98
+Oscar 27 1.83
+Jorge 31 1.75
+Patricia 32 1.67
+Miguel 36 1.76
+Pablo 21 1.70
