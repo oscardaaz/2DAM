@@ -51,7 +51,7 @@ public class actividad10 {
     }
 
     // a. Cree un fichero de acceso aleatorio llamado fichero.dat
-    public static void crearFichero() {
+    private static void crearFichero() {
         try {
             Files.deleteIfExists(RUTA);
             Files.createFile(RUTA);
@@ -63,7 +63,7 @@ public class actividad10 {
     }
 
     // b. Muestre por consola el tamaño del fichero (que en este punto debería ser 0 * bytes)
-    public static void tamanoFichero() {
+    private static void tamanoFichero() {
         try (RandomAccessFile raf = new RandomAccessFile(
                 RUTA.toFile(), "r")) {
 
@@ -75,7 +75,7 @@ public class actividad10 {
     }
 
     // c. Escriba en el fichero los números del 0 al 199
-    public static void escribirFichero() {
+    private static void escribirFichero() {
         try (RandomAccessFile raf = new RandomAccessFile(
                 RUTA.toFile(), "rw")) {
 

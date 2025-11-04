@@ -1,5 +1,7 @@
 package Actividad11;
 
+import java.nio.file.Path;
+
 public class actividad11 {
     /**
      * Utilizando un fichero de acceso aleatorio, realiza un programa Java que muestre al usuario
@@ -17,12 +19,20 @@ public class actividad11 {
      * 4. Mostrar el fichero creado.
      * 5. Salir
      */
-    public static void main(String[] args) {
 
+    private static final Path RUTA = Path.of("src/Actividad11", "ficheroActividad11.dat");
+
+    public static void main(String[] args) {
+        System.out.println();
 
     }
 
+    private void menu(){
+        do {
 
+
+        }while (opcion != 5)
+    }
 
 
 }
