@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class Reloj extends Thread {
 
@@ -17,12 +18,16 @@ public class Reloj extends Thread {
                 int hora = c.get(Calendar.HOUR);
                 int minutos = c.get(Calendar.MINUTE);
                 int segundos = c.get(Calendar.SECOND);
-                String tiempo = String.format("%d:%d:%d",hora,minutos,segundos);
+                String tiempo = String.format(Locale.US,"%d:%d:%d",hora,minutos,segundos);
                 this.label.setText(tiempo);
                 Thread.sleep(1000);
             }catch(InterruptedException ex){
                 System.err.println("Error del hilo reloj");
             }
         }
+    }
+
+    public static void main(String[] args) {
+
     }
 }
