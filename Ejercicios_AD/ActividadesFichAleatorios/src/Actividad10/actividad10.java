@@ -58,7 +58,7 @@ public class actividad10 {
             System.out.println("\nFichero creado correctamente");
 
         } catch (IOException e) {
-            System.err.println("\nEl fichero ya existe");
+            System.err.println("Error E/S fichero");
         }
     }
 
