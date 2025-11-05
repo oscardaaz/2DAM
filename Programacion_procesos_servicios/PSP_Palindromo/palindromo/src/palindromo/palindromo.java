@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class palindromo {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        System.out.print("Introduce una cadena: ");
         String cadena = sc.nextLine().trim();
         sc.close();
 
@@ -15,9 +16,9 @@ public class palindromo {
         String invertida = new StringBuilder(cadena).reverse().toString();
 
         if (cadena.equalsIgnoreCase(invertida)) {
-            System.out.println("Es palíndromo");
+            System.out.println("Es palindromo");
         } else {
-            System.out.println("No es palíndromo");
+            System.out.println("No es palindromo");
         }
     }
 }
