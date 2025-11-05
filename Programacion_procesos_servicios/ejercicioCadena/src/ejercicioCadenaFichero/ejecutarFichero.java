@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class ejecutarFichero {
     public static void main(String[] args) {
         // En lugar de apuntar a artifacts, apunta al raíz del proyecto
-        Path directorio = Path.of("out/artifacts/ejercicioCadena_jar2");
-        ProcessBuilder pb = new ProcessBuilder("java","-jar", "ejercicioCadena.jar");
+        Path directorio = Path.of("out/artifacts/ejercicioCadenaFichero_jar");
+        ProcessBuilder pb = new ProcessBuilder("java","-jar", "ejercicioCadenaFichero.jar");
         pb.directory(directorio.toFile());
         pb.inheritIO();
         Process p = null;
