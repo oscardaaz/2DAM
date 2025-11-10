@@ -1,7 +1,5 @@
 package ejercicios
 
-import java.sql.SQLOutput
-import kotlin.math.exp
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -32,7 +30,7 @@ fun main() {
     //ejercicio23()
     //ejercicio24()
     //ejercicio25()
-    ejercicio26()
+    //ejercicio26()
     //ejercicio27()
     //ejercicio28()
 }
@@ -120,15 +118,6 @@ fun ejercicio8() {
         numero++
     }
 
-    /*println("\nNumeros del 1 al 100 con bucle do-while: \n")
-    do {
-        println(numero++)
-        // O tambien
-        //println(numero)
-        //numero++
-
-    }while (numero <= 100)*/
-
 }
 
 fun ejercicio9() {
@@ -195,14 +184,7 @@ fun ejercicio13() {
 fun ejercicio14() {
     print("\nCuantas ventas ha realizado el comercial en los ultimos 15 dias: ")
     val ventas = readln().trim().toInt()
-    //var contador = 1
     var total = 0.0
-    /*do {
-        println("Introduce el precio de la venta $contador")
-        val cantidad = readln().toDouble()
-        total += cantidad
-        contador++
-    }while(contador <= ventas)*/
 
     for (i in 1..ventas) {
         println("Introduce el precio de la venta $i ")
@@ -290,6 +272,9 @@ fun ejercicio17() {
 
 fun ejercicio18() {
 
+    val texto = "La lluvia en Sevilla es una maravilla"
+    val resultado = texto.replace('a', 'e').replace('A', 'E')
+    println(resultado)
 }
 
 fun ejercicio19() {
@@ -364,9 +349,7 @@ fun ejercicio23() {
     print("Introduce una frase: ")
     var cadena = readln().trim()
     cadena = cadena.replace(" ", "\n")
-    //val auxiliar = ArrayList(cadena.split(" "))
     println("Palabras sueltas")
-    //for (contenido in auxiliar) println (contenido)
     println(cadena)
 }
 
@@ -423,48 +406,29 @@ fun ejercicio25() {
 
 fun ejercicio26() {
 
-    print("Introduce un numero entero: ")
-    val numero1 = readln().toInt()
-    print("Introduce otro numero entero: ")
-    val numero2 = readln().toInt()
+    print("Introduce el primer numero entero: ")
+    val a = readln().toInt()
+    print("Introduce el segundo numero entero: ")
+    val b = readln().toInt()
 
-    var x = numero1 + 1
-    val y = 2;
-   var esPrimo = true
-   var numeros = 0
-    var primosTotales = 0
-//    while (numero1 < numero2){
-//        do {
-//            val modulo = x % y
-//            if (modulo != 0) esPrimo = true
-//            if (modulo == 0) esPrimo = false
-//            x++
-//        }while (y < x)
-//        if (esPrimo == true)
-//            numeros += x
-//    }
-//    println(numeros)
+    val inicio = if (a <= b) a else b
+    val fin = if (a <= b) b else a
 
-for (i in numero1..numero2){
+    println("\nNumeros primos entre $inicio y $fin:")
 
-    for (j in 2..numero1){
-
-        while (esPrimo) {
-            if (j != numero2 - 1) {
-                if (numero1 % j != 0)
-                else if (numero1 % j == 0) esPrimo = false
-
-            } else break
+    var n = inicio
+    while (n <= fin) {
+        var esPrimo = true
+        var i = 2
+        if (n <= 1) esPrimo = false
+        while (esPrimo && i < n) {
+            if (n % i == 0) esPrimo = false
+            else i++
         }
-        if (esPrimo) {
-            primosTotales += numero1
-        } else {
-
-        }
+        if (esPrimo) print("$n ")
+        n++
     }
-}
-println("\n $primosTotales")
-
+    println()
 }
 
 fun ejercicio27() {
