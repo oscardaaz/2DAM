@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Scanner;
 
 public class actividad12 {
 
@@ -24,8 +23,6 @@ public class actividad12 {
      */
 
     private static final Path RUTA = Path.of("src/Actividad12", "ficheroActividad12.dat");
-    private static final Scanner sc = new Scanner(System.in);
-
 
     private static final int BYTES_INT = 4;
     private static final int BYTES_DOUBLE = 8;
