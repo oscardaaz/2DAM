@@ -1,6 +1,7 @@
 package app;
 
 import data.DBConnectionManager;
+import data.dao.AlumnoDAOImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -41,6 +42,9 @@ public class Main {
         }
 
         // CRUD
+
+        AlumnoDAOImpl alumnoDAO = new AlumnoDAOImpl(conexion);
+        alumnoDAO.crearTabla();
 
         DBConnectionManager.cerrarConexion();
 
