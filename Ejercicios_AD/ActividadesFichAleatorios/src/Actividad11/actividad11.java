@@ -3,6 +3,7 @@ package Actividad11;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class actividad11 {
@@ -24,7 +25,7 @@ public class actividad11 {
      */
 
     private static final Path RUTA = Path.of("src/Actividad11", "ficheroActividad11.dat");
-    private static final Scanner sc = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in).useLocale(Locale.US);
 
 
     private static final int BYTES_INT = 4;
@@ -112,9 +113,9 @@ public class actividad11 {
                     break;
                 } else posPuntero = raf.getFilePointer();
                 if (posPuntero == raf.length()) System.out.println("Numero no encontrado en el fichero!");
-            }
-            System.out.println("Fin de lectura\n");
 
+            }
+            //System.out.println("Fin de lectura del fichero\n");
 
         } catch (IOException e) {
             System.err.println("Error de E/S al buscar y sustituir numero " + e.getMessage());
@@ -125,7 +126,7 @@ public class actividad11 {
 
         try (RandomAccessFile raf = new RandomAccessFile(
                 RUTA.toFile(), "rw")) {
-            System.out.println("Introduce la posición del numero a modificar: ");
+            System.out.print("Introduce la posición del numero a modificar: ");
             int posUsuario = sc.nextInt();
             long posPuntero = (long) TAM_REGISTRO * (posUsuario - 1);
             boolean existe = posPuntero < raf.length() && posPuntero >= 0;
@@ -152,7 +153,7 @@ public class actividad11 {
             System.out.println("---- Contenido del fichero ----");
             while (posPuntero != raf.length()) {
                 float numero = raf.readFloat();
-                System.out.printf("Posición %d: %f%n", posicion, numero);
+                System.out.printf(Locale.US, "Posición %d: %.2f%n", posicion, numero);
                 posPuntero = raf.getFilePointer();
                 posicion++;
             }
