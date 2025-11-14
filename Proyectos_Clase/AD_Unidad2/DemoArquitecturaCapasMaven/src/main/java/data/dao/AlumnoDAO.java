@@ -13,5 +13,4 @@ public interface AlumnoDAO {
     int eliminarAlumno(int id);
     boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo);
 
-
 }

@@ -50,7 +50,8 @@ public class Main {
 
         // Insertar alumno
         //alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
-        alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
+        int insertarOK = alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
+        System.out.println(insertarOK > 0 ? "Borrado OK" : "ID no encontrado al insertar o exception generada");
 
         // Leer todos los alumnos
         for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
