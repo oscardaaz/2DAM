@@ -48,13 +48,6 @@ public class actividad12 {
     private static void anadirProductos() {
         try (RandomAccessFile raf = new RandomAccessFile(
                 RUTA.toFile(), "rw")) {
-//            for (int i = 1 ; i <= 25 ; i++){
-//                Random generadorAleatorios = new Random();
-//                double aleatorio = 1 + generadorAleatorios.nextDouble(200);
-//                double valor = Math.random();
-//                Producto producto = new Producto(i,aleatorio);
-//                raf.writeUTF(producto.toString());
-//            }
 
             for (int i = 1; i <= 25; i++) {
                 Random generadorAleatorios = new Random();

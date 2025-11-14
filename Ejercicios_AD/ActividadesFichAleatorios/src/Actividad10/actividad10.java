@@ -9,9 +9,7 @@ import java.nio.file.Path;
 public class actividad10 {
     private static final Path RUTA = Path.of("src/Actividad10", "fichero.dat");
 
-
     private static final int BYTES_INT = 4;
-
     private static final int TAM_REGISTRO =
             BYTES_INT;
     //4 Bytes en total
@@ -166,7 +164,9 @@ public class actividad10 {
         }
     }
 
-    private static void ejercicioCompleto(){
+    /*Creo una función solo para ejecutar las funciones en orden según lo que
+    pide el programa y con el output esperado. (Solo por comodidad, esto no se suele hacer) */
+    private static void ejercicioCompleto() {
         crearFichero();
         tamanoFichero();
         escribirFichero();
