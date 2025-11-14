@@ -37,10 +37,6 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return "Alumno { " +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", ciclo='" + ciclo + '\'' +
-                '}';
+        return String.format("Alumno (id= %d, Nombre= %s, Ciclo= %s)",id,nombre,ciclo);
     }
 }

@@ -2,9 +2,11 @@ package app;
 
 import data.DBConnectionManager;
 import data.dao.AlumnoDAOImpl;
+import model.Alumno;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.IllegalFormatCodePointException;
 
 public class Main {
     public static void main(String[] args) {
@@ -44,7 +46,31 @@ public class Main {
         // CRUD
 
         AlumnoDAOImpl alumnoDAO = new AlumnoDAOImpl(conexion);
-        alumnoDAO.crearTabla();
+        //alumnoDAO.crearTabla();
+
+        // Insertar alumno
+        //alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
+        alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
+
+        // Leer todos los alumnos
+        for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
+            System.out.println(a);
+        }
+
+        //Modificar alumno
+        boolean modificarOk = alumnoDAO.modificarAlumno(2,"Nuevo nombre","Integración social");
+        System.out.println(modificarOk ? "Modificado OK" : "ID no encontrado al modificar o excepción generada");
+
+        //Borrar Alumno
+        int filasEliminadas = alumnoDAO.eliminarAlumno(3);
+        System.out.println(filasEliminadas > 0 ? "Borrado OK" : "ID no encontrado al borrar o exception generada");
+
+
+
+        // Leer todos los alumnos
+        for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
+            System.out.println(a);
+        }
 
         DBConnectionManager.cerrarConexion();
 

@@ -8,9 +8,9 @@ import java.util.List;
 public interface AlumnoDAO {
 
     boolean crearTabla();
-    boolean insertarAlumno(Alumno alumno);
+    int insertarAlumno(Alumno alumno);
     List<Alumno> leerTodosLosAlumnos();
-    boolean eliminarAlumno(int id);
+    int eliminarAlumno(int id);
     boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo);
 
 

@@ -3,18 +3,17 @@ package data.dao;
 import model.Alumno;
 
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class AlumnoDAOImpl implements AlumnoDAO{
+public class AlumnoDAOImpl implements AlumnoDAO {
 
     private Connection conexion;
 
     public AlumnoDAOImpl(Connection conexion) {
 
-        if (conexion == null){
+        if (conexion == null) {
             throw new IllegalArgumentException("La conexión no puede ser nula");
 
         }
@@ -25,7 +24,7 @@ public class AlumnoDAOImpl implements AlumnoDAO{
     public boolean crearTabla() {
 
         String sql = """
-                CREATE TABLE IF NOT EXISTS alumno(
+                CREATE TABLE IF NOT EXISTS alumno (
                     id INT PRIMARY KEY,
                     nombre VARCHAR(50),
                     ciclo VARCHAR(50)
@@ -34,11 +33,11 @@ public class AlumnoDAOImpl implements AlumnoDAO{
 
         try (Statement st = conexion.createStatement()) {
 
-            st.execute(sql);
+            st.executeUpdate(sql);
             System.out.println("Tabla alumno creada");
             return true;
 
-        }catch (SQLException sqle) {
+        } catch (SQLException sqle) {
             System.err.println("Error en crear tabla " + sqle.getMessage());
             return false;
         }
@@ -46,22 +45,93 @@ public class AlumnoDAOImpl implements AlumnoDAO{
     }
 
     @Override
-    public boolean insertarAlumno(Alumno alumno) {
-        return false;
+    public int insertarAlumno(Alumno alumno) {
+
+        String sql = "INSERT INTO alumno VALUES (?, ?, ?)";
+
+        try (PreparedStatement pst = conexion.prepareStatement(sql)) {
+            pst.setInt(1, alumno.getId());
+            pst.setString(2, alumno.getNombre());
+            pst.setString(3, alumno.getCiclo());
+            int filasInsertadas = pst.executeUpdate();
+
+
+            System.out.println("Alumno añadido correctamente");
+            return filasInsertadas;
+
+        } catch (SQLException sqle) {
+            System.err.println("Error al insertar Alumno " + sqle.getMessage());
+            return -1;
+        }
     }
 
     @Override
     public List<Alumno> leerTodosLosAlumnos() {
-        return List.of();
+        String sql = "SELECT * FROM alumno";
+        List<Alumno> lista = new ArrayList<>();
+
+        try (Statement st = conexion.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                lista.add(mapearAlumno(rs));
+            }
+
+
+        } catch (SQLException sqle) {
+            System.err.println("Error en crear tabla " + sqle.getMessage());
+
+        }
+
+        return lista;
+    }
+
+    private static Alumno mapearAlumno(ResultSet rs) throws SQLException {
+        //Utilizando el nombre de las columnas
+//        return new Alumno(
+//                rs.getInt("id"),
+//                rs.getString("nombre"),
+//                rs.getString("ciclo")
+//        );
+
+        //Utilizando el nº (índice) de las columnas
+        return new Alumno(
+                rs.getInt(1),
+                rs.getString(2),
+                rs.getString(3)
+        );
+
     }
 
     @Override
-    public boolean eliminarAlumno(int id) {
-        return false;
+    public int eliminarAlumno(int id) {
+
+        String sql = "DELETE FROM alumno WHERE id = ?";
+
+        try (PreparedStatement pst = conexion.prepareStatement(sql)) {
+            pst.setInt(1, id);
+            return pst.executeUpdate();
+        } catch (SQLException sqle) {
+            System.err.println("Error al borrar Alumno " + sqle.getMessage());
+            return -1;
+        }
+
     }
 
     @Override
     public boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo) {
-        return false;
+        String sql = "UPDATE alumno SET nombre = ?, ciclo = ? WHERE id = ?";
+
+        try (PreparedStatement pst = conexion.prepareStatement(sql)) {
+            pst.setInt(3, id);
+            pst.setString(1, nuevoNombre);
+            pst.setString(2, nuevoCiclo);
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException sqle) {
+            System.err.println("Error al modificar Alumno " + sqle.getMessage());
+            return false;
+        }
+
     }
 }
