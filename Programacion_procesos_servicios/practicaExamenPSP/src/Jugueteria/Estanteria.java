@@ -1,17 +1,17 @@
 package Jugueteria;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Estanteria {
     private static final int CAPACIDAD_MAXIMA = 7;
-    private Queue<Juguete> juguetes = new LinkedList<>();
-    
+    private final List<Juguete> juguetes = new ArrayList<>();
+
     public synchronized void colocarJuguete(Juguete juguete) throws InterruptedException {
         while (juguetes.size() >= CAPACIDAD_MAXIMA) {
             wait();
         }
-        juguetes.add(juguete);
+        juguetes.add(juguete); // FIFO: añadimos al final
         System.out.println("  📦 Juguete colocado en estantería: " + juguete + " [Total: " + juguetes.size() + "]");
         notifyAll();
     }
@@ -20,7 +20,7 @@ public class Estanteria {
         while (juguetes.isEmpty()) {
             wait();
         }
-        Juguete juguete = juguetes.poll();
+        Juguete juguete = juguetes.remove(0); // FIFO: coger el primero
         notifyAll();
         return juguete;
     }
