@@ -49,7 +49,9 @@ public class Jugueteria {
         }
         
         System.out.println("\n🎅 Todos los elfos terminaron de crear juguetes\n");
-        
+        // IMPORTANTE: indicar a la estantería que no habrá más producción para evitar bloqueos
+        estanteria.finalizarProduccion();
+
         // Esperar a que todos los niños terminen
         for (Nino nino : ninos) {
             try {

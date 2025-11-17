@@ -27,16 +27,13 @@ public class Nino extends Thread {
         
         while (!expulsado) {
             try {
-                // Intentar coger un juguete
-                if (!estanteria.hayJuguetes()) {
-                    Thread.sleep(500); // Esperar un poco antes de verificar de nuevo
-                    if (!estanteria.hayJuguetes()) {
-                        break; // No hay más juguetes, salir
-                    }
-                }
-                
+                // Intentar coger un juguete (ahora puede devolver null si no habrá más)
                 Juguete juguete = estanteria.cogerJuguete();
-                
+                if (juguete == null) {
+                    // No hay más juguetes y no se producirán más -> salir
+                    break;
+                }
+
                 if (esBueno) {
                     // Niño bueno: juega y devuelve
                     int tiempoJuego = random.nextInt(4) + 2; // 2-5 segundos
