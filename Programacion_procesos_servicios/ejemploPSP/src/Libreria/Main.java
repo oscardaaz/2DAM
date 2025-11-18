@@ -24,48 +24,40 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
 
         Estanteria estanteria = new Estanteria(5);
-        
-        //List<Thread> escritor = new ArrayList<>();
-        //List<Thread> lector = new ArrayList<>();
+        List<Thread> todosLosHilos = new ArrayList<>();
 
-        for (int i = 1; i < 3; i++) {
-            //escritor.add(new Escritor(estanteria, "Escritor " + i));
-            //Thread escritor = new Thread(new Escritor(estanteria, "Escritor " + i));
-            Escritor escritor = new Escritor(estanteria, "Escritor " + i);
+        // ✅ GUARDAR SOLO LOS ESCRITORES en lista separada
+        List<Escritor> escritores = new ArrayList<>();
+
+        // 2 escritores
+        for (int i = 1; i <= 2; i++) {
+            Escritor escritor = new Escritor(estanteria, "Escritor-" + i);
+            escritores.add(escritor);
+            todosLosHilos.add(escritor);
             escritor.start();
-//escritor.join();
         }
 
-        for (int i = 1; i < 4; i++) {
-            //lector.add(new Lector (estanteria, "Lector " + i));
-            //Thread lector = new Thread(new Lector(estanteria, "Escritor " + i));
-            Lector lector = new Lector(estanteria, "Lector " + i);
+        // 3 lectores
+        for (int i = 1; i <= 3; i++) {
+            Lector lector = new Lector(estanteria, "Lector-" + i);
+            todosLosHilos.add(lector);
             lector.start();
-           // lector.join();
         }
 
-//        for (Thread hilo : escritor){
-//            hilo.start();
-//
-//        }
-//        for (Thread hilo : escritor){
-//            hilo.join();
-//
-//        }
-//
-//        for (Thread hilo : lector){
-//            hilo.start();
-//
-//        }
-//        for (Thread hilo : lector){
-//            hilo.join();
-//
-//        }
+        // ✅ PRIMERO: Esperar solo a que terminen los ESCRITORES
+        for (Escritor escritor : escritores) {
+            escritor.join();
+        }
 
-//        for (Thread hilo : hilos ){
-//            hilo.join();
-//        }
+        // ✅ SEGUNDO: Avisar que la producción terminó
+        System.out.println("📢 Todos los escritores han terminado. No habrá más libros.");
+        estanteria.terminarProduccion();
 
-        System.out.println("la tienda ha cerrado");
+        // ✅ TERCERO: Esperar a que terminen los LECTORES
+        for (Thread hilo : todosLosHilos) {
+            hilo.join();  // Esto incluye escritores y lectores
+        }
+
+        System.out.println("🏪 La tienda ha cerrado");
     }
 }
