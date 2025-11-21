@@ -5,6 +5,8 @@ import data.dao.AlumnoDAOImpl;
 import model.Alumno;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -62,19 +64,37 @@ public class Main {
         }
 
         //Modificar alumno
-        boolean modificarOk = alumnoDAO.modificarAlumno(2,"Nuevo nombre","Integración social");
+        boolean modificarOk = alumnoDAO.modificarAlumno(1005,"Nuevo nombre","Integración social");
         System.out.println(modificarOk ? "Modificado OK" : "ID no encontrado al modificar o excepción generada");
 
         //Borrar Alumno
-        int filasEliminadas = alumnoDAO.eliminarAlumno(3);
+        int filasEliminadas = alumnoDAO.eliminarAlumno(1004);
         System.out.println(filasEliminadas > 0 ? "Borrado OK" : "ID no encontrado al borrar o exception generada");
 
+        //Creamos y rellenamos la lista de alumnos a insertar
+        List<Alumno> listaAlumnos = new ArrayList<>();
+        listaAlumnos.add(new Alumno("Pepe","ASIR"));
+        listaAlumnos.add(new Alumno("Jorge","2DAM"));
+        listaAlumnos.add(new Alumno("Patricia","2DAW"));
+        listaAlumnos.add(new Alumno("Daniel","1DAM"));
+        listaAlumnos.add(new Alumno("Miguel","2DAM"));
+        listaAlumnos.add(new Alumno("Arturo","2DAM"));
 
+        List<Integer> ids = alumnoDAO.insertarVariosAlumnosBatch(listaAlumnos);
+        System.out.println("ID's generados: " + ids);
 
         // Leer todos los alumnos
         for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
             System.out.println(a);
         }
+
+        // Coger el ultimo ID;
+        if (alumnoDAO.cogerUltimoID() != 0) System.out.println("Ultimo ID Generado: " + alumnoDAO.cogerUltimoID());
+        else System.out.println("Error al coger el ultimo ID generado");
+
+        int ultimaClave = alumnoDAO.obtenerUltimaClave();
+        System.out.println(ultimaClave == 0 ? "Error " : "El ultimo ID es " + ultimaClave) ;
+
 
         DBConnectionManager.cerrarConexion();
 

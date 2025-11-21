@@ -78,6 +78,73 @@ public class AlumnoDAOImpl implements AlumnoDAO {
     }
 
     @Override
+    public List<Integer> insertarVariosAlumnosBatch(List<Alumno> alumnos) {
+
+        final String SQL = "INSERT INTO alumno (nombre, ciclo) VALUES (?, ?)";
+
+        List<Integer> idsGenerados = new ArrayList<>();
+
+        try (PreparedStatement pst = conexion.prepareStatement(
+                SQL,
+                Statement.RETURN_GENERATED_KEYS)) {
+            //pst.setInt(1, alumno.getId());
+
+            for (Alumno alumno : alumnos) {
+                pst.setString(1, alumno.getNombre());
+                pst.setString(2, alumno.getCiclo());
+                pst.addBatch();
+            }
+
+            pst.executeBatch();
+
+            //Recuperar la clave autogenerada
+            try (ResultSet rs = pst.getGeneratedKeys()){
+                while (rs.next()) {
+                    idsGenerados.add(rs.getInt(1));
+                }
+            }
+        } catch (SQLException sqle) {
+            System.err.println("Error al insertar Alumno " + sqle.getMessage());
+        }
+        return idsGenerados;
+    }
+
+    @Override
+    public Integer cogerUltimoID() {
+        String sql = "SELECT id FROM alumno";
+        int ultimoID = 0;
+
+        try (Statement st = conexion.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                ultimoID = rs.getInt(1);
+            }
+            return ultimoID;
+        } catch (SQLException sqle) {
+            System.err.println("Error en coger el ultimo ID " + sqle.getMessage());
+        }
+        return 0;
+
+    }
+
+    @Override
+    public int obtenerUltimaClave() {
+
+        final String SQL = "SELECT id FROM alumno ORDER BY id DESC LIMIT 1";
+        // SELECT MAX(id) FROM alumno
+        try (Statement st = conexion.createStatement();
+                ResultSet rs = st.executeQuery(SQL)){
+
+            if (rs.next()) return rs.getInt(1);
+
+        }catch (SQLException sqle){
+            System.err.println("Error al obtener ultima clave " + sqle.getMessage());
+
+        }
+        return 0;
+    }
+
+    @Override
     public List<Alumno> leerTodosLosAlumnos() {
         String sql = "SELECT * FROM alumno";
         List<Alumno> lista = new ArrayList<>();
@@ -146,4 +213,8 @@ public class AlumnoDAOImpl implements AlumnoDAO {
         }
 
     }
+
+
+
+
 }

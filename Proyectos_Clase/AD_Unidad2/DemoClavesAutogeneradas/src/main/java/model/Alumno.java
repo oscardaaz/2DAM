@@ -42,6 +42,6 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return String.format("Alumno (id= %d, Nombre= %s, Ciclo= %s)",id,nombre,ciclo);
+        return String.format("Alumno { id: %4d, Nombre: %-10s, Ciclo: %-5s}",id,nombre,ciclo);
     }
 }
