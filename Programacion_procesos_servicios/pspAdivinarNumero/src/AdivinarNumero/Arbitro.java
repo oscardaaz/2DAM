@@ -27,7 +27,7 @@ public class Arbitro {
         }
 
         turno = (turno % 3) + 1; // Si hay 3 jugadores
-        System.out.println("Le toca a Jug" + turno);
+        System.out.println("Le toca a Jugador " + turno);
         notifyAll();
     }
 
