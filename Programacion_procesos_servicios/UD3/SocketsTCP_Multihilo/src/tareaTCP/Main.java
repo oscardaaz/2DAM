@@ -1,6 +1,7 @@
 package tareaTCP;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
@@ -34,7 +35,8 @@ public class Main {
             String resp = dis.readUTF();
             System.out.println(resp);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.err.println("Error al mandar hilo cliente(Main) " + e.getMessage());
             e.printStackTrace();
         }
     }

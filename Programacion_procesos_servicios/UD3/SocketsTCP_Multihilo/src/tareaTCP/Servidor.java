@@ -26,6 +26,7 @@ public class Servidor {
             }
 
         } catch (Exception e) {
+            System.err.println("Error en hilo servidor al recibir, " + e.getMessage());
             e.printStackTrace();
         }
     }
