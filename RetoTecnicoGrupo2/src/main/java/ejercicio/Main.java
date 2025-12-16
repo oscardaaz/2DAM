@@ -11,7 +11,7 @@ public class Main {
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
     public static void main(String[] args) {
 
-            Empleado empleado = new Empleado(2,100);
+        Empleado empleado = new Empleado(5,1000);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -25,8 +25,9 @@ public class Main {
             }
             System.err.println("Error al guardar: " + e.getMessage());
         } finally {
-
             em.close();
+            emf.close();
+
         }
     }
 }
