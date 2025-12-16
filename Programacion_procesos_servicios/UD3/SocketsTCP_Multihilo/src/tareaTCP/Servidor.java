@@ -16,10 +16,10 @@ public class Servidor {
                 ObjectInputStream ois = new ObjectInputStream(cliente.getInputStream());
                 DataOutputStream dos = new DataOutputStream(cliente.getOutputStream());
 
-                Empleado emp = (Empleado) ois.readObject();
-                System.out.println("Empleado recibido: " + emp);
+                Empleado empleado = (Empleado) ois.readObject();
+                System.out.println("Empleado recibido: " + empleado);
 
-                empleados.add(emp);
+                empleados.add(empleado);
                 dos.writeUTF("Empleado añadido correctamente. Total: " + empleados.size());
 
                 cliente.close();

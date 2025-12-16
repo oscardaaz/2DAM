@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Main {
+public class Cliente {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -25,6 +25,8 @@ public class Main {
         System.out.print("Salario: ");
         double salario = sc.nextDouble();
 
+        sc.close();
+
         Empleado emp = new Empleado(dni, nombre, edad, dep, salario);
 
         try (Socket socket = new Socket("localhost", 5000);
@@ -32,8 +34,8 @@ public class Main {
              DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 
             oos.writeObject(emp);
-            String resp = dis.readUTF();
-            System.out.println(resp);
+            String respuesta = dis.readUTF();
+            System.out.println(respuesta);
 
         } catch (IOException e) {
             System.err.println("Error al mandar hilo cliente(Main) " + e.getMessage());
