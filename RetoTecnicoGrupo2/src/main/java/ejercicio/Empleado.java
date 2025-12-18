@@ -21,4 +21,12 @@ public class Empleado implements Serializable {
         this.id = id;
         this.salario = salario;
     }
+
+    @Override
+    public String toString() {
+        return "Empleado{" +
+                "id=" + id +
+                ", salario=" + salario +
+                '}';
+    }
 }
