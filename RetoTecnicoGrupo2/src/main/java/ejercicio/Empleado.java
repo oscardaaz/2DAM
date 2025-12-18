@@ -13,7 +13,6 @@ public class Empleado implements Serializable {
 
     private int salario;
 
-
     public Empleado(){
 
     }

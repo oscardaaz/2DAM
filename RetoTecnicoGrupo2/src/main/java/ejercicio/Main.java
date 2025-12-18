@@ -11,7 +11,7 @@ public class Main {
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
     public static void main(String[] args) {
 
-        Empleado empleado = new Empleado(5,1000);
+        Empleado empleado = new Empleado(6,1000);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
