@@ -17,6 +17,7 @@ public class Main {
         //mostrarEmpleado(11);
         //mostrarEmpleado(12);
         insertarEmpleado(new Empleado(15,6050));
+        //psdfsdfs
     }
 
     private static void insertarEmpleado(Empleado empleado){
