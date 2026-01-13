@@ -17,6 +17,7 @@ public class Main {
         //mostrarEmpleado(11);
         mostrarEmpleado(12);
         //esto es una prueba para el github
+        //segunda prueba funcnionara
     }
 
     private static void insertarEmpleado(Empleado empleado){
