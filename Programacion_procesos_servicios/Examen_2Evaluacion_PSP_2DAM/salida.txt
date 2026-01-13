@@ -1,0 +1,16 @@
+ El volumen de la unidad D es Datos
+ El n£mero de serie del volumen es: 0CED-A40B
+
+ Directorio de D:\Users\oscar.domalo\Documents\2DAM\Programacion_procesos_servicios\Examen_2Evaluacion_PSP_2DAM
+
+18/11/2025  17:47    <DIR>          .
+18/11/2025  17:53    <DIR>          ..
+18/11/2025  16:55               352 .gitignore
+18/11/2025  17:53    <DIR>          .idea
+18/11/2025  17:53                 0 error.txt
+18/11/2025  16:55               433 Examen_2Evaluacion_PSP_2DAM.iml
+18/11/2025  16:58    <DIR>          out
+18/11/2025  17:53                 0 salida.txt
+18/11/2025  16:55    <DIR>          src
+               4 archivos            785 bytes
+               5 dirs  1.601.232.232.448 bytes libres

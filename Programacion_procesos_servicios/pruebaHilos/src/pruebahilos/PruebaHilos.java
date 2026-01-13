@@ -8,13 +8,12 @@ package pruebahilos;
  *
  * @author oscar.domalo
  */
-public class PruebaHilos {
+public class PruebaHilos extends Thread {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
     
+    PruebaHilos (String nombre){
+        //super.(nombre)
+                
+    }
+   
 }

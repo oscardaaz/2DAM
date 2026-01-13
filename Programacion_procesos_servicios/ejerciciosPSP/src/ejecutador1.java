@@ -8,7 +8,8 @@ public class ejecutador1 {
 
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", "ejerciciosPSP.jar");
         pb.directory(directorio);
-        pb.inheritIO();  // Hereda entrada/salida/error para que se muestren directamente
+        System.out.println("\n");
+        pb.inheritIO();  // Hereda entrada/salida/error del hijo para que se muestren directamente
 
         try {
             Process p = pb.start();

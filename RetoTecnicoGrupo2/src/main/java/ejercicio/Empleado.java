@@ -24,9 +24,9 @@ public class Empleado implements Serializable {
 
     @Override
     public String toString() {
-        return "Empleado{" +
-                "id=" + id +
-                ", salario=" + salario +
-                '}';
+        return "Empleado { " +
+                "id= " + id +
+                ", salario= " + salario +
+                " }";
     }
 }

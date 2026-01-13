@@ -11,7 +11,16 @@ public class Main {
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
     public static void main(String[] args) {
 
-        Empleado empleado = new Empleado(11,1000);
+        //Empleado empleado = new Empleado(11,1000);
+
+        //insertarEmpleado(new Empleado(12,100));
+        //mostrarEmpleado(11);
+        mostrarEmpleado(12);
+
+    }
+
+    private static void insertarEmpleado(Empleado empleado){
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -31,14 +40,14 @@ public class Main {
 
         }
     }
-
     private static void mostrarEmpleado(int id){
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
-
+            tx.begin();
             Empleado emp = em.find(Empleado.class,id);
-            System.out.println(emp);
+            System.out.println("\n" + emp);
 
         } catch (Exception e) {
             if (tx.isActive()) {

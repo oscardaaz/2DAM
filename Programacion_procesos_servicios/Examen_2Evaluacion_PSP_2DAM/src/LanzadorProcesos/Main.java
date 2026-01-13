@@ -56,7 +56,7 @@ public class Main {
 
 
         // Ejercicio 3
-        ProcessBuilder pb3 = new ProcessBuilder("CMD","/C","DIRR");
+        ProcessBuilder pb3 = new ProcessBuilder("CMD","/C","DIR");
 
         File fOut = new File("salida.txt");
         File fErr = new File("error.txt");

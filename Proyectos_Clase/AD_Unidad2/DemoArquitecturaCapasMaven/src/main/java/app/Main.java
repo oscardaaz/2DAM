@@ -3,10 +3,8 @@ package app;
 import data.DBConnectionManager;
 import data.dao.AlumnoDAOImpl;
 import model.Alumno;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.IllegalFormatCodePointException;
 
 public class Main {
     public static void main(String[] args) {
