@@ -6,6 +6,8 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
 
@@ -13,6 +15,9 @@ public class Main {
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
 
     public static void main(String[] args) {
+
+        // Configura logging de Hibernate a SEVERE (solo errores graves)
+        //Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         try {
 //            insertarEmpleado(new Empleado(101,6050));
@@ -22,6 +27,8 @@ public class Main {
             listarEmpleados();
             borrarEmpleado(101);
             listarEmpleados();
+            listarEmpleadosTablaObject();
+            listarEmpleadosTablaEmpleado();
         } finally {
 
             emf.close();
@@ -140,6 +147,64 @@ public class Main {
             em.close();
         }
     }
+
+    public static void listarEmpleadosTablaObject() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Object[]> lista = em.createQuery(
+                    "SELECT e.id, e.salario FROM Empleado e ORDER BY e.id"
+            ).getResultList();
+
+            if (lista.isEmpty()) {
+                System.out.println("No hay Empleados.");
+                return;
+            }
+
+            // Encabezado
+            System.out.println("\nListar empleados con Object[] en Tabla:");
+            System.out.printf("%-5s %-10s%n", "ID", "SALARIO");
+            System.out.println("--------------------");
+
+            for (Object[] fila : lista) {
+                int id = (int) fila[0];
+                int salario = (int) fila[1];
+                System.out.printf("%-5d %-10d%n", id, salario);
+            }
+
+        } finally {
+            em.close();
+        }
+    }
+
+
+    public static void listarEmpleadosTablaEmpleado() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Empleado> lista = em.createQuery(
+                    "SELECT e FROM Empleado e ORDER BY e.id", Empleado.class
+            ).getResultList();
+
+            if (lista.isEmpty()) {
+                System.out.println("No hay Empleados.");
+                return;
+            }
+
+            // Encabezado
+            System.out.println("\nListar empleados con tabla Empleado[]");
+            System.out.printf("%-5s %-10s%n", "ID", "SALARIO");
+            System.out.println("--------------------");
+
+            for (Empleado e : lista) {
+                System.out.printf("%-5d %5d€%n", e.getId(), e.getSalario());
+            }
+
+        } finally {
+            em.close();
+        }
+    }
+
+
+
 
 
 }
