@@ -1,6 +1,5 @@
 package ejercicio;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.io.Serializable;
@@ -28,5 +27,21 @@ public class Empleado implements Serializable {
                 "id= " + id +
                 ", salario= " + salario +
                 " }";
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSalario() {
+        return salario;
+    }
+
+    public void setSalario(int salario) {
+        this.salario = salario;
     }
 }

@@ -5,22 +5,30 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+import java.util.List;
+
 public class Main {
 
     public static final EntityManagerFactory emf
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
+
     public static void main(String[] args) {
 
-        //Empleado empleado = new Empleado(11,1000);
+        try {
+//            insertarEmpleado(new Empleado(101,6050));
+//            mostrarEmpleado(106);
+//            insertarEmpleado(new Empleado(112,4200));
+//            mostrarEmpleado(112);
+            listarEmpleados();
+            borrarEmpleado(101);
+            listarEmpleados();
+        } finally {
 
-        //insertarEmpleado(new Empleado(12,100));
-        //mostrarEmpleado(11);
-        //mostrarEmpleado(12);
-        insertarEmpleado(new Empleado(15,6050));
-        //psdfsdfs
+            emf.close();
+        }
     }
 
-    private static void insertarEmpleado(Empleado empleado){
+   /* private static void insertarEmpleado(Empleado empleado){
 
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -36,28 +44,102 @@ public class Main {
             }
             System.err.println("Error al guardar: " + e.getMessage());
         } finally {
-            em.close();
-            emf.close();
-
+            em.close(); // Solo cerramos el EntityManager
         }
-    }
-    private static void mostrarEmpleado(int id){
+    }*/
+
+    private static void insertarEmpleado(Empleado empleado) {
 
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Empleado emp = em.find(Empleado.class,id);
-            System.out.println("\n" + emp);
 
+        try {
+            Empleado existe = em.find(Empleado.class, empleado.getId());
+
+            if (existe != null) {
+                System.out.println("Empleado con ID " + empleado.getId() + " ya existe.");
+                return;
+            }
+
+            tx.begin();
+            em.persist(empleado);
+            tx.commit();
+            System.out.println("Empleado guardado: " + empleado.getId());
+
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            System.err.println("Error al guardar: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+
+    private static void mostrarEmpleado(int id) {
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            Empleado empleado = em.find(Empleado.class, id);
+            if (empleado != null) {
+                System.out.println("\n" + empleado);
+            } else {
+                System.out.println("\nEmpleado con ID " + id + " no encontrado.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al consultar: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+    public static void borrarEmpleado(int id) {
+
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        Empleado empleado = null;
+        try {
+            empleado = em.find(Empleado.class, id);
+            if (empleado != null) {
+                tx.begin();
+                em.remove(empleado);
+                tx.commit();
+                System.out.println("Empleado con id:" + empleado.getId() + " eliminado.");
+            } else {
+                System.out.println("Empleado con id: " + id + " no encontrado.");
+            }
         } catch (Exception e) {
             if (tx.isActive()) {
                 tx.rollback();
             }
-            System.err.println("Error al guardar: " + e.getMessage());
+            System.err.println("Error al eliminar: "
+                    + e.getMessage());
+            //empleado = null;
         } finally {
             em.close();
-            emf.close();
         }
     }
+
+    public static void listarEmpleados() {
+        EntityManager em = emf.createEntityManager();
+        List<Empleado> lista;
+        try {
+            lista = em.createQuery("SELECT e FROM Empleado e"
+                    + " ORDER BY e.id", Empleado.class).getResultList();
+            if (lista.isEmpty()) {
+                System.out.println("No hay Empleados.");
+            } else {
+                System.out.println("\nLista de empleados:");
+                for (Empleado empleado : lista) {
+                    System.out.println(empleado);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al listar empleados: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+
 }
