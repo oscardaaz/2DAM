@@ -168,7 +168,7 @@ public class Main {
             for (Object[] fila : lista) {
                 int id = (int) fila[0];
                 int salario = (int) fila[1];
-                System.out.printf("%-5d %-10d%n", id, salario);
+                System.out.printf("%-5d %6d€%n", id, salario);
             }
 
         } finally {
@@ -195,7 +195,7 @@ public class Main {
             System.out.println("--------------------");
 
             for (Empleado e : lista) {
-                System.out.printf("%-5d %5d€%n", e.getId(), e.getSalario());
+                System.out.printf("%-5d %6d€%n", e.getId(), e.getSalario());
             }
 
         } finally {
