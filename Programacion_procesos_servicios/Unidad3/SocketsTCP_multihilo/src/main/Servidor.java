@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Servidor {
 
-    private static final int PUERTO = 5000;
+    private static final int PUERTO = 5050;
     private static List<Empleado> listaEmpleados =
             Collections.synchronizedList(new ArrayList<>());
 

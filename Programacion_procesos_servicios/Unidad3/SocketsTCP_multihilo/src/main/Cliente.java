@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Cliente {
 
     private static final String HOST = "localhost";
-    private static final int PUERTO = 5000;
+    private static final int PUERTO = 5050;
 
     public static void main(String[] args) {
 
@@ -29,15 +29,13 @@ public class Cliente {
         System.out.print("Salario: ");
         double salario = sc.nextDouble();
 
-        Empleado emp = new Empleado(dni, nombre, edad, departamento, salario);
+        Empleado empleado = new Empleado(dni, nombre, edad, departamento, salario);
 
-        try (
-                Socket socket = new Socket(HOST, PUERTO);
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())
-        ) {
-            oos.writeObject(emp);
+        try (Socket socket = new Socket(HOST, PUERTO);
+             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
+            oos.writeObject(empleado);
             String respuesta = (String) ois.readObject();
             System.out.println("Servidor: " + respuesta);
 

@@ -25,12 +25,14 @@ public class Empleado implements Serializable {
 
     @Override
     public String toString() {
-        return "Empleado{" +
-                "DNI='" + dni + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", edad=" + edad +
-                ", departamento='" + departamento + '\'' +
-                ", salario=" + salario +
-                '}';
+        return "Empleado (" +
+                "DNI= '" + dni + '\'' +
+                ", nombre= '" + nombre + '\'' +
+                ", edad= " + edad +
+                ", departamento= '" + departamento + '\'' +
+                ", salario= " + salario +
+                "€ )";
     }
+
+
 }
