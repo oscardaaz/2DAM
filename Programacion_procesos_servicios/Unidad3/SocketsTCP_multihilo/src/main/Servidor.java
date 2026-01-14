@@ -7,8 +7,7 @@ import java.util.*;
 public class Servidor {
 
     private static final int PUERTO = 5050;
-    private static List<Empleado> listaEmpleados =
-            Collections.synchronizedList(new ArrayList<>());
+    private static List<Empleado> listaEmpleados = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println("Servidor iniciado...");

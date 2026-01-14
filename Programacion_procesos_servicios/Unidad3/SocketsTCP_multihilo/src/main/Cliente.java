@@ -13,7 +13,7 @@ public class Cliente {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("DNI: ");
+        System.out.print("Dni: ");
         String dni = sc.nextLine();
 
         System.out.print("Nombre: ");
@@ -36,7 +36,7 @@ public class Cliente {
              ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
             oos.writeObject(empleado);
-            String respuesta = (String) ois.readObject();
+            String respuesta = ois.readObject().toString();
             System.out.println("Servidor: " + respuesta);
 
         } catch (IOException | ClassNotFoundException e) {
