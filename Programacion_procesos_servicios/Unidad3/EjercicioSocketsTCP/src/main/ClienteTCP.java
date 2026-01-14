@@ -1,9 +1,8 @@
 package main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
 
 public class ClienteTCP {
 
@@ -11,25 +10,18 @@ public class ClienteTCP {
         final String HOST = "localhost";
         final int PUERTO = 5000;
 
-        try (Socket socket = new Socket(HOST, PUERTO)) {
-
-            BufferedReader teclado = new BufferedReader(
-                    new InputStreamReader(System.in)
-            );
-            BufferedReader entrada = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream())
-            );
-            PrintWriter salida = new PrintWriter(
-                    socket.getOutputStream(), true
-            );
+        try (Socket socket = new Socket(HOST, PUERTO);
+             BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter salida = new PrintWriter(socket.getOutputStream(), true);
+             Scanner sc = new Scanner(System.in)) {
 
             String cadena;
 
             do {
                 System.out.print("Introduce una cadena (* para salir): ");
-                cadena = teclado.readLine();
+                cadena = sc.nextLine();
 
-                salida.println(cadena);
+                salida.println(cadena); // Enviamos al servidor
 
                 if (!cadena.equals("*")) {
                     String respuesta = entrada.readLine();
@@ -40,7 +32,8 @@ public class ClienteTCP {
 
             System.out.println("Cliente finalizado.");
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.err.println("Error de comunicación con el servidor: " + e.getMessage());
             e.printStackTrace();
         }
     }

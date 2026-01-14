@@ -1,10 +1,7 @@
 package main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 
 public class ServidorTCP {
 
@@ -14,33 +11,25 @@ public class ServidorTCP {
         try (ServerSocket servidor = new ServerSocket(PUERTO)) {
             System.out.println("Servidor esperando conexión...");
 
-            Socket cliente = servidor.accept();
-            System.out.println("Cliente conectado");
+            try (Socket cliente = servidor.accept();
+                 BufferedReader entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+                 PrintWriter salida = new PrintWriter(cliente.getOutputStream(), true)) {
 
-            BufferedReader entrada = new BufferedReader(
-                    new InputStreamReader(cliente.getInputStream())
-            );
-            PrintWriter salida = new PrintWriter(
-                    cliente.getOutputStream(), true
-            );
+                System.out.println("Cliente conectado");
 
-            String cadena;
-
-            while (true) {
-                cadena = entrada.readLine();
-
-                if (cadena == null || cadena.equals("*")) {
-                    System.out.println("Servidor finalizado.");
-                    break;
+                String cadena;
+                while ((cadena = entrada.readLine()) != null) {
+                    if (cadena.equals("*")) {
+                        System.out.println("Servidor finalizado.");
+                        break;
+                    }
+                    salida.println(cadena.length());
                 }
 
-                int longitud = cadena.length();
-                salida.println(longitud);
             }
 
-            cliente.close();
-
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.err.println("Error en el servidor: " + e.getMessage());
             e.printStackTrace();
         }
     }
