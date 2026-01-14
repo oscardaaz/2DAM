@@ -63,7 +63,7 @@ public class Cliente {
 
         System.out.print("Salario: ");
         double salario = sc.nextDouble();
-        sc.nextLine(); // Limpiar
+        sc.nextLine();
 
         Empleado empleado = new Empleado(dni, nombre, edad, departamento, salario);
 
@@ -71,12 +71,10 @@ public class Cliente {
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
-            // Enviar opción "AÑADIR"
             oos.writeObject("AÑADIR");
-            // Enviar empleado
+
             oos.writeObject(empleado);
 
-            // Recibir respuesta
             String respuesta = (String) ois.readObject();
             System.out.println("Servidor: " + respuesta);
 
@@ -90,10 +88,8 @@ public class Cliente {
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
-            // Enviar opción "TOTAL"
             oos.writeObject("TOTAL");
 
-            // Recibir respuesta
             String respuesta = (String) ois.readObject();
             System.out.println("Servidor: " + respuesta);
 
