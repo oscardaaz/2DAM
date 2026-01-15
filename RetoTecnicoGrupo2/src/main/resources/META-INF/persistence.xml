@@ -10,6 +10,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <properties>
+
             <!-- Conexión MySQL -->
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/prueba"/>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

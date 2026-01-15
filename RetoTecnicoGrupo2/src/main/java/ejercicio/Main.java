@@ -33,12 +33,15 @@ public class Main {
                 System.out.println(menu);
                 System.out.print("Introduce una opción: ");
                 opcion = sc.nextInt();
-                if (opcion == 1) insertarEmpleadoSC();
-                if (opcion == 2) mostrarEmpleadoSC();
-                if (opcion == 3) listarEmpleadosTablaEmpleado();
+                switch (opcion) {
+                    case 1 -> insertarEmpleadoSC();
+                    case 2 -> mostrarEmpleadoSC();
+                    case 3 -> listarEmpleadosTablaEmpleado();
+                    case 4 -> System.out.println("Saliendo...");
+                    default -> System.out.println("Opción inválida");
+                }
 
             } while (opcion != 4);
-            System.out.println("Saliendo...");
 
 //            insertarEmpleado(new Empleado(101,6050));
 //            mostrarEmpleado(106);
