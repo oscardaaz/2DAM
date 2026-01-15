@@ -6,32 +6,53 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
+
 
 public class Main {
 
     public static final EntityManagerFactory emf
             = Persistence.createEntityManagerFactory("RetoTecnicoGrupo2");
 
+    private static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
 
-        // Configura logging de Hibernate a SEVERE (solo errores graves)
-        //Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
-
         try {
+            String menu = """
+                    
+                    Menu de opciones:
+                    1. Insertar un nuevo Empleado.
+                    2. Mostrar un único Empleado.
+                    3. Mostrar todos los Empleados.
+                    4. Salir.
+                    """;
+            int opcion;
+            do {
+
+                System.out.println(menu);
+                System.out.print("Introduce una opción: ");
+                opcion = sc.nextInt();
+                if (opcion == 1) insertarEmpleadoSC();
+                if (opcion == 2) mostrarEmpleadoSC();
+                if (opcion == 3) listarEmpleadosTablaEmpleado();
+
+            } while (opcion != 4);
+            System.out.println("Saliendo...");
+
 //            insertarEmpleado(new Empleado(101,6050));
 //            mostrarEmpleado(106);
 //            insertarEmpleado(new Empleado(112,4200));
 //            mostrarEmpleado(112);
-            listarEmpleados();
-            borrarEmpleado(101);
-            listarEmpleados();
-            listarEmpleadosTablaObject();
-            listarEmpleadosTablaEmpleado();
+//            listarEmpleados();
+//            borrarEmpleado(101);
+//            listarEmpleados();
+//            listarEmpleadosTablaObject();
+//            listarEmpleadosTablaEmpleado();
         } finally {
 
             emf.close();
+            sc.close();
         }
     }
 
@@ -81,11 +102,66 @@ public class Main {
         }
     }
 
+    private static void insertarEmpleadoSC() {
+
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            System.out.print("Ingresa el id del empleado: ");
+            int id = sc.nextInt();
+            System.out.print("Introduce el salario del Empleado: ");
+            int salario = sc.nextInt();
+            sc.nextLine();
+
+            Empleado empleado = new Empleado(id, salario);
+
+            Empleado existe = em.find(Empleado.class, empleado.getId());
+
+            if (existe != null) {
+                System.out.println("Empleado con ID " + empleado.getId() + " ya existe.");
+                return;
+            }
+
+            tx.begin();
+            em.persist(empleado);
+            tx.commit();
+            System.out.println("Nuevo empleado guardado con id: " + empleado.getId());
+
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            System.err.println("Error al guardar: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
 
     private static void mostrarEmpleado(int id) {
 
         EntityManager em = emf.createEntityManager();
         try {
+            Empleado empleado = em.find(Empleado.class, id);
+            if (empleado != null) {
+                System.out.println("\n" + empleado);
+            } else {
+                System.out.println("\nEmpleado con ID " + id + " no encontrado.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al consultar: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+    private static void mostrarEmpleadoSC() {
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            System.out.print("Introduce el id del empleado a buscar: ");
+            int id = sc.nextInt();
+            sc.nextLine();
             Empleado empleado = em.find(Empleado.class, id);
             if (empleado != null) {
                 System.out.println("\n" + empleado);
@@ -191,11 +267,11 @@ public class Main {
 
             // Encabezado
             System.out.println("\nListar empleados con tabla Empleado[]");
-            System.out.printf("%-5s %-10s%n", "ID", "SALARIO");
+            System.out.printf("%-12s %-10s%n", "ID", "SALARIO");
             System.out.println("--------------------");
 
             for (Empleado e : lista) {
-                System.out.printf("%-5d %6d€%n", e.getId(), e.getSalario());
+                System.out.printf("%-12d %6d€%n", e.getId(), e.getSalario());
             }
 
         } finally {
