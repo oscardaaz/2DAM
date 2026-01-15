@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -31,6 +32,7 @@ public class Main {
                 System.out.println(menu);
                 System.out.print("Introduce una opción: ");
                 opcion = sc.nextInt();
+                sc.nextLine();
                 switch (opcion) {
                     case 1 -> insertarEmpleadoSC();
                     case 2 -> mostrarEmpleadoSC();
@@ -38,7 +40,6 @@ public class Main {
                     case 4 -> System.out.println("Saliendo...");
                     default -> System.out.println("Opción inválida");
                 }
-
             } while (opcion != 4);
 
 //            insertarEmpleado(new Empleado(101,6050));
