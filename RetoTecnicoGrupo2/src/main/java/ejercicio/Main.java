@@ -53,9 +53,14 @@ public class Main {
 //            listarEmpleadosTablaEmpleado();
         } finally {
 
-            emf.close();
+            if (emf.isOpen()) emf.close();
+            //emf.close();
             sc.close();
         }
+    }
+
+    private static void cerrarEMF(){
+        if (emf.isOpen()) emf.close();
     }
 
    /* private static void insertarEmpleado(Empleado empleado){
