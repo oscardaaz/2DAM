@@ -37,7 +37,7 @@ public class CalculadoraApp extends JFrame {
     private final JRadioButton rdbOct = new JRadioButton("OCT");
     private final JRadioButton rdbDec = new JRadioButton("DEC");
     private final JRadioButton rdbHex = new JRadioButton("HEX");
-    private final JButton btnAvClear = new JButton("Clear");
+    private final JButton btnAvClear = new JButton("Reiniciar");
 
     private final JButton[] btnDig = new JButton[16]; // 0-9, A-F
 
@@ -165,7 +165,7 @@ public class CalculadoraApp extends JFrame {
         JButton bSign = mkBtn("+/-", e -> basicoCambiarSigno());
         JButton bSum = mkBtn("+", e -> basicoSetOperacion("+"));
 
-        JButton bClear = mkBtn("Clear", e -> basicoClear());
+        JButton bClear = mkBtn("Borrar", e -> basicoClear());
         JButton bEq = mkBtn("=", e -> basicoIgual());
 
         add.b(b7, 0, 0, 1, 1, btnSize);
