@@ -3,3 +3,10 @@
 .idea/
 out/
 *.iml
+
+# META-INF generado por builds / IDEs
+**/META-INF/**
+**/meta-inf/**
+
+# PERMITIR solo el META-INF que es código fuente
+!**/src/main/resources/META-INF/**
