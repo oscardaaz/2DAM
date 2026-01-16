@@ -48,7 +48,7 @@ public class Main {
             sc.close();
         }
     }
-
+    //test
     private static void insertarEmpleado() {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
