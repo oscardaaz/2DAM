@@ -14,3 +14,21 @@ out/
 # Ignorar cosas de netbeans
 echo "nbproject/private/" >> .gitignore
 echo "**/nbproject/private/" >> .gitignore
+
+# Configuraciones personales de IDEs (recursivo) NETBEANS
+**/nbproject/private/
+**/.idea/
+**/*.iml
+
+# Archivos compilados (recursivo)
+**/*.class
+**/out/
+**/bin/
+**/target/
+**/build/
+**/dist/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.log
