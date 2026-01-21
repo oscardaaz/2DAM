@@ -10,3 +10,7 @@ out/
 
 # PERMITIR solo el META-INF que es código fuente
 !**/src/main/resources/META-INF/**
+
+# Ignorar cosas de netbeans
+echo "nbproject/private/" >> .gitignore
+echo "**/nbproject/private/" >> .gitignore
