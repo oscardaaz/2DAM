@@ -5,15 +5,8 @@ out/
 *.iml
 
 # META-INF generado por builds / IDEs
-**/META-INF/**
-**/meta-inf/**
-
-# PERMITIR solo el META-INF que es código fuente
-!**/src/main/resources/META-INF/**
-
-# Ignorar cosas de netbeans
-echo "nbproject/private/" >> .gitignore
-echo "**/nbproject/private/" >> .gitignore
+**/META-INF/
+**/meta-inf/
 
 # Configuraciones personales de IDEs (recursivo) NETBEANS
 **/nbproject/private/
@@ -32,3 +25,6 @@ echo "**/nbproject/private/" >> .gitignore
 .DS_Store
 Thumbs.db
 *.log
+
+# EXCEPCIÓN: Permitir META-INF de recursos (ÚLTIMA LÍNEA)
+!**/src/main/resources/META-INF/
