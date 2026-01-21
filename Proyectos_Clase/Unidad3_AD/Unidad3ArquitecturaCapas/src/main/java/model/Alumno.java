@@ -1,12 +1,24 @@
 package model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "alumnos")
 public class Alumno {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String nombre, ciclo;
 
-    public Alumno(int id, String nombre, String ciclo) {
-        this.id = id;
+    @Column(nullable = false, length = 100)
+    private String nombre;
+
+    @Column(nullable = false, length = 100)
+    private String ciclo;
+
+    public Alumno() { }
+
+    public Alumno(String nombre, String ciclo) {
         this.nombre = nombre;
         this.ciclo = ciclo;
     }
