@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AlumnoDAO {
 
-    boolean crearTabla();
+    //boolean crearTabla();
     int insertarAlumno(Alumno alumno);
     List<Alumno> leerTodosLosAlumnos();
     int eliminarAlumno(int id);

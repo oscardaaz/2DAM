@@ -1,5 +1,5 @@
 package app;
-
+/*
 import data.DBConnectionManager;
 import data.dao.AlumnoDAOImpl;
 import model.Alumno;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
 
-        Connection conexion = null;
+       /* Connection conexion = null;
 
         if (args.length < 5) {
             System.err.println("Se requiere ip puerto dbName user password");
@@ -48,8 +48,8 @@ public class Main {
 
         // Insertar alumno
         //alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
-        int insertarOK = alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
-        System.out.println(insertarOK > 0 ? "Borrado OK" : "ID no encontrado al insertar o exception generada");
+        //int insertarOK = alumnoDAO.insertarAlumno(new Alumno(1,"Oscar","2DAM"));
+        //System.out.println(insertarOK > 0 ? "Borrado OK" : "ID no encontrado al insertar o exception generada");
 
         // Leer todos los alumnos
         for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
@@ -75,3 +75,4 @@ public class Main {
 
     }
 }
+*/

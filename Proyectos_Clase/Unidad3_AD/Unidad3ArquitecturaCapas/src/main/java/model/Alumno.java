@@ -18,6 +18,12 @@ public class Alumno {
 
     public Alumno() { }
 
+    public Alumno(int id, String nombre, String ciclo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.ciclo = ciclo;
+    }
+
     public Alumno(String nombre, String ciclo) {
         this.nombre = nombre;
         this.ciclo = ciclo;

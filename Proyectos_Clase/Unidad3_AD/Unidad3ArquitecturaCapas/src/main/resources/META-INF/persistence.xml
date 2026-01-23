@@ -12,6 +12,10 @@
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/alumnos_db"/>
+
+            <!-- BBDD Ubuntu por IP y Puente Anfitrión -->
+            <!--  <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://192.168.56.101:3306/prueba"/> -->
+
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value="admin"/>
 

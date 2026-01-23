@@ -1,4 +1,93 @@
 package data.dao;
 
-public class AlumnoDAOImplJPA {
+import data.JPAUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import model.Alumno;
+
+import java.util.List;
+
+public class AlumnoDAOImplJPA implements AlumnoDAO{
+
+
+    @Override
+    public int insertarAlumno(Alumno alumno) {
+
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        try {
+            em = JPAUtil.createEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
+            em.persist(alumno);
+            tx.commit();
+            return alumno.getId();
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Excepción al insertar alumno: " + e.getMessage());
+            return -1;
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+
+    @Override
+    public List<Alumno> leerTodosLosAlumnos() {
+        return List.of();
+    }
+
+    @Override
+    public int eliminarAlumno(int id) {
+        EntityManager em = null;
+        EntityTransaction tx = null;
+
+        try {
+            em = JPAUtil.createEntityManager();
+            tx = em.getTransaction();
+            Alumno alumno = em.find(Alumno.class,id);
+
+            if (alumno != null) {
+                tx.begin();
+                em.remove(alumno);
+                tx.commit();
+                return 1;
+            }else return -1;
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al borrar alumno: " + e.getMessage());
+            return -1;
+        } finally {
+            if (em != null && em.isOpen() ) em.close();
+        }
+    }
+
+    @Override
+    public boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo) {
+        EntityManager em = JPAUtil.createEntityManager();
+        EntityTransaction tx = null;
+        Alumno alumno = null;
+        try {
+            alumno = em.find(Alumno.class,id);
+            tx = em.getTransaction();
+
+            if (alumno != null) {
+                tx.begin();
+                alumno.setCiclo(nuevoCiclo);
+                alumno.setNombre(nuevoNombre);
+                //em.merge(alumno);
+                tx.commit();
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Exception al modificar alumno" + e.getMessage());
+            return false;
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+
+    }
 }

@@ -6,10 +6,10 @@ import model.Alumno;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 public class AlumnoDAOImpl implements AlumnoDAO {
 
-    private Connection conexion;
+   private Connection conexion;
 
     public AlumnoDAOImpl(Connection conexion) {
 
@@ -135,3 +135,4 @@ public class AlumnoDAOImpl implements AlumnoDAO {
 
     }
 }
+*/
