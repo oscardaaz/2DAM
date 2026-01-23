@@ -1,5 +1,4 @@
 package main;
-
 import java.io.Serializable;
 
 public class Numeros implements Serializable {
