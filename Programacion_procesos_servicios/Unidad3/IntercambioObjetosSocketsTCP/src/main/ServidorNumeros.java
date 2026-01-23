@@ -11,7 +11,7 @@ public class ServidorNumeros {
         ObjectOutputStream salida = null;
 
         try {
-            servidor = new ServerSocket(6000);
+            servidor = new ServerSocket(5050);
             System.out.println("Servidor iniciado. Esperando cliente...");
 
             cliente = servidor.accept();
@@ -20,14 +20,14 @@ public class ServidorNumeros {
             entrada = new ObjectInputStream(cliente.getInputStream());
             salida = new ObjectOutputStream(cliente.getOutputStream());
 
-            Numeros numeroObj;
+            Numeros numeroObjeto;
             boolean continuar = true;
 
             while (continuar) {
-                numeroObj = (Numeros) entrada.readObject();
-                System.out.println("Recibido número: " + numeroObj.getNumero());
+                numeroObjeto = (Numeros) entrada.readObject();
+                System.out.println("Recibido número: " + numeroObjeto.getNumero());
 
-                int num = numeroObj.getNumero();
+                int num = numeroObjeto.getNumero();
 
                 if (num <= 0) {
                     System.out.println("Número <= 0. Cerrando servidor...");
@@ -36,13 +36,13 @@ public class ServidorNumeros {
                     long cuadrado = (long) num * num;
                     long cubo = cuadrado * num;
 
-                    numeroObj.setCuadrado(cuadrado);
-                    numeroObj.setCubo(cubo);
+                    numeroObjeto.setCuadrado(cuadrado);
+                    numeroObjeto.setCubo(cubo);
 
                     System.out.println("Calculado - Cuadrado: " + cuadrado + ", Cubo: " + cubo);
 
                     salida.reset();
-                    salida.writeObject(numeroObj);
+                    salida.writeObject(numeroObjeto);
                 }
             }
 

@@ -12,7 +12,7 @@ public class ClienteNumeros {
         Scanner sc = new Scanner(System.in);
 
         try {
-            cliente = new Socket("localhost", 6000);
+            cliente = new Socket("localhost", 5050);
             System.out.println("Conectado al servidor.");
 
             salida = new ObjectOutputStream(cliente.getOutputStream());
@@ -23,11 +23,19 @@ public class ClienteNumeros {
 
             while (continuar) {
                 System.out.print("Introduce un número (<= 0 para salir): ");
-                numero = sc.nextInt();
 
-                Numeros numeroObj = new Numeros(numero);
+                while (!sc.hasNextInt()) {
+                    System.out.println("Error: Debes introducir un número entero.");
+                    sc.nextLine();
+                    System.out.print("Introduce un número (<= 0 para salir): ");
+                }
+
+                numero = sc.nextInt();
+                sc.nextLine();
+
+                Numeros numeroObjeto = new Numeros(numero);
                 salida.reset();
-                salida.writeObject(numeroObj);
+                salida.writeObject(numeroObjeto);
 
                 if (numero <= 0) {
                     System.out.println("Cerrando cliente...");
