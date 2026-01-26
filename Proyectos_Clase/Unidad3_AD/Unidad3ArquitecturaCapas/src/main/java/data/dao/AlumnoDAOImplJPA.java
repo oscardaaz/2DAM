@@ -54,6 +54,33 @@ public class AlumnoDAOImplJPA implements AlumnoDAO{
     }
 
     @Override
+    public Alumno mostrarAlumnoID(int id) {
+        //TODO Terminar funcion
+        EntityManager em = null;
+        //EntityTransaction tx = null;
+        Alumno alumno = null;
+        try {
+            em = JPAUtil.createEntityManager();
+            //tx = em.getTransaction();
+            boolean exito = true;
+            alumno = em.find(Alumno.class,id);
+            if (alumno != null){
+                return alumno;
+            } else {
+                alumno = null;
+            }
+
+
+        } catch (Exception e) {
+            // if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al buscar todos los alumnos: " + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen() ) em.close();
+        }
+        return alumno;
+    }
+
+    @Override
     public int eliminarAlumno(int id) {
         EntityManager em = null;
         EntityTransaction tx = null;

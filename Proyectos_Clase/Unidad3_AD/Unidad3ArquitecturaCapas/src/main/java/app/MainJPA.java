@@ -1,7 +1,6 @@
 package app;
 
 import data.JPAUtil;
-import data.dao.AlumnoDAO;
 import data.dao.AlumnoDAOImplJPA;
 import jakarta.persistence.*;
 import model.Alumno;
