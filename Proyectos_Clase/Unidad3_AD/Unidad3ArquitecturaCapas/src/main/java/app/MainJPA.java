@@ -6,6 +6,8 @@ import data.dao.AlumnoDAOImplJPA;
 import jakarta.persistence.*;
 import model.Alumno;
 
+import java.util.List;
+
 public class MainJPA {
 
     public static void main(String[] args) {
@@ -18,8 +20,14 @@ public class MainJPA {
 //        int borradoOK = alumnoDAO.eliminarAlumno(9);
 //        System.out.println(borradoOK > 0 ? "Borrado OK" : "ID no encontrado al eliminar o exception generada");
 //
-        boolean modificadoOK = alumnoDAO.modificarAlumno(12,"NuevoNombre","NuevoCiclo");
-        System.out.println(modificadoOK ? "Modificado OK el alumno con id" : "ID no encontrado al modificar o exception generada");
+//        boolean modificadoOK = alumnoDAO.modificarAlumno(12,"NuevoNombre","NuevoCiclo");
+//        System.out.println(modificadoOK ? "Modificado OK el alumno con id" : "ID no encontrado al modificar o exception generada");
+
+        List<Alumno> listaAlumnos = alumnoDAO.leerTodosLosAlumnos();
+        for (Alumno a : listaAlumnos){
+            System.out.println(a);
+        }
+
 
         JPAUtil.close();
 

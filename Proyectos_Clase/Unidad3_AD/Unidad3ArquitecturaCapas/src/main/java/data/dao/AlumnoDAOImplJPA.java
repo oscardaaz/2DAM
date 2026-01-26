@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import model.Alumno;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlumnoDAOImplJPA implements AlumnoDAO{
@@ -34,7 +35,22 @@ public class AlumnoDAOImplJPA implements AlumnoDAO{
 
     @Override
     public List<Alumno> leerTodosLosAlumnos() {
-        return List.of();
+        List<Alumno> lista = new ArrayList<>();
+        EntityManager em = null;
+        //EntityTransaction tx = null;
+
+        try {
+            em = JPAUtil.createEntityManager();
+            //tx = em.getTransaction();
+            lista = em.createQuery("SELECT a FROM Alumno a ORDER BY a.id").getResultList();
+
+        } catch (Exception e) {
+           // if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al buscar todos los alumnos: " + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen() ) em.close();
+        }
+        return lista;
     }
 
     @Override
