@@ -22,10 +22,15 @@ public class MainJPA {
 //        boolean modificadoOK = alumnoDAO.modificarAlumno(12,"NuevoNombre","NuevoCiclo");
 //        System.out.println(modificadoOK ? "Modificado OK el alumno con id" : "ID no encontrado al modificar o exception generada");
 
-        List<Alumno> listaAlumnos = alumnoDAO.leerTodosLosAlumnos();
-        for (Alumno a : listaAlumnos){
-            System.out.println(a);
-        }
+//        List<Alumno> listaAlumnos = alumnoDAO.leerTodosLosAlumnos();
+//        for (Alumno a : listaAlumnos){
+//            System.out.println(a);
+//        }
+
+//        Alumno alumno = alumnoDAO.mostrarAlumnoID(5);
+//        System.out.println(alumno != null ? "Mostrado único correcto, alumno:\n"
+//                + alumno : "ID no encontrado al buscar o exception generada");
+
 
 
         JPAUtil.close();
