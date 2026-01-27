@@ -23,15 +23,36 @@ public class MainJPA {
 //        System.out.println(modificadoOK ? "Modificado OK el alumno con id" : "ID no encontrado al modificar o exception generada");
 
 //        List<Alumno> listaAlumnos = alumnoDAO.leerTodosLosAlumnos();
-//        for (Alumno a : listaAlumnos){
-//            System.out.println(a);
+//        if (!listaAlumnos.isEmpty()){
+//            System.out.println("--- Lista de alumnos: ---");
+//            for (Alumno a : listaAlumnos){
+//                System.out.println(a);
+//            }
+//        }else {
+//            System.out.println("No hay alumnos, la lista esta vacía");
 //        }
 
 //        Alumno alumno = alumnoDAO.mostrarAlumnoID(5);
 //        System.out.println(alumno != null ? "Mostrado único correcto, alumno:\n"
 //                + alumno : "ID no encontrado al buscar o exception generada");
 
+        System.out.println("Listado de alumnos:");
+        for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
+            System.out.println(a);
+        }
 
+//        boolean modificado = alumnoDAO.modificarAlumnoProfe(8,"nuevo","nuevo");
+//        System.out.println(modificado ? "Alumno modificado correctamente " : "No se pudo modificar el usuario");
+
+        Boolean borrado = alumnoDAO.eliminarAlumnoProfe(12);
+        System.out.println(borrado ? "Alumno borrado correctamente " : "No se pudo eliminar el usuario");
+
+
+
+        System.out.println("Listado de alumnos:");
+        for (Alumno a : alumnoDAO.leerTodosLosAlumnos()){
+            System.out.println(a);
+        }
 
         JPAUtil.close();
 

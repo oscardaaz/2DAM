@@ -12,6 +12,8 @@ public interface AlumnoDAO {
     List<Alumno> leerTodosLosAlumnos();
     Alumno mostrarAlumnoID(int id);
     int eliminarAlumno(int id);
+    boolean eliminarAlumnoProfe(int id);
     boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo);
+    boolean modificarAlumnoProfe(int id, String nuevoNombre, String nuevoCiclo);
 
 }

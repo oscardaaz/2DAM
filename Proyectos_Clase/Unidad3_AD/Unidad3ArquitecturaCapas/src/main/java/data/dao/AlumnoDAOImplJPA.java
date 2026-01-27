@@ -3,6 +3,7 @@ package data.dao;
 import data.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 import model.Alumno;
 
 import java.util.ArrayList;
@@ -35,22 +36,22 @@ public class AlumnoDAOImplJPA implements AlumnoDAO{
 
     @Override
     public List<Alumno> leerTodosLosAlumnos() {
-        List<Alumno> lista = new ArrayList<>();
         EntityManager em = null;
-        //EntityTransaction tx = null;
-
+        List<Alumno> lista = new ArrayList<>();
         try {
             em = JPAUtil.createEntityManager();
-            //tx = em.getTransaction();
-            lista = em.createQuery("SELECT a FROM Alumno a ORDER BY a.id").getResultList();
+//            lista = em.createQuery("SELECT a FROM Alumno a ORDER BY a.id").getResultList();
+            TypedQuery<Alumno> query = em.createQuery("SELECT a FROM Alumno a ORDER BY a.id", Alumno.class);
+            return query.getResultList();
 
-        } catch (Exception e) {
-           // if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Error al buscar todos los alumnos: " + e.getMessage());
-        } finally {
+        }
+//        catch (Exception e) {
+//            System.err.println("Error al buscar todos los alumnos: " + e.getMessage());
+//        }
+         finally {
             if (em != null && em.isOpen() ) em.close();
         }
-        return lista;
+
     }
 
     @Override
@@ -100,6 +101,33 @@ public class AlumnoDAOImplJPA implements AlumnoDAO{
     }
 
     @Override
+    public boolean eliminarAlumnoProfe(int id) {
+        EntityManager em = null;
+        EntityTransaction tx = null;
+
+        try {
+            em = JPAUtil.createEntityManager();
+            tx = em.getTransaction();
+
+            Alumno alumno = em.find(Alumno.class,id);
+            if (alumno == null)  return  false;
+            else {
+                tx.begin();
+                em.remove(alumno);
+                tx.commit();
+                return true;
+            }
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error DAO (eliminarAlumnoProfe): " + e.getMessage());
+            return false;
+        } finally {
+            if (em != null && em.isOpen() ) em.close();
+        }
+    }
+
+    @Override
     public boolean modificarAlumno(int id, String nuevoNombre, String nuevoCiclo) {
         EntityManager em = JPAUtil.createEntityManager();
         EntityTransaction tx = null;
@@ -120,6 +148,39 @@ public class AlumnoDAOImplJPA implements AlumnoDAO{
         } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
             System.err.println("Exception al modificar alumno" + e.getMessage());
+            return false;
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+
+    }
+
+    @Override
+    public boolean modificarAlumnoProfe(int id, String nuevoNombre, String nuevoCiclo) {
+
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        Alumno alumno = null;
+
+        try {
+            em = JPAUtil.createEntityManager();
+            tx = em.getTransaction();
+
+            tx.begin();
+            alumno = em.find(Alumno.class,id);
+            if (alumno == null) {
+                tx.rollback();
+                return false;
+            }
+            alumno.setNombre(nuevoNombre);
+            alumno.setCiclo(nuevoCiclo);
+
+            tx.commit();
+            return true;
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Exception DAO (modificarAlumnoProfe): " + e.getMessage());
             return false;
         } finally {
             if (em != null && em.isOpen()) em.close();
