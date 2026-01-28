@@ -13,6 +13,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * Calculadora con dos modos:
@@ -125,21 +131,32 @@ public class CalculadoraApp extends JFrame {
      * Devuelve el directorio donde está el JAR real de la aplicación.
      * En tu estructura, eso debería ser ...\recursos\ (porque calculadora.jar está ahí).
      */
-    private Path getJarDirectory() {
+    /**
+     * Devuelve un directorio base "razonable" para la ejecución:
+     * - Si estamos en un JAR -> carpeta que contiene el JAR.
+     * - Si Launch4j devuelve la ruta del .exe como CodeSource -> carpeta que contiene el .exe.
+     * - Si estamos en IDE (clases) -> el directorio devuelto por CodeSource.
+     */
+    private Path getAppBaseDir() {
         try {
             URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-            Path p = Paths.get(location.toURI());
+            Path p = Paths.get(location.toURI()).toAbsolutePath().normalize();
 
-            // Si apunta a un .jar, devolvemos la carpeta donde está
-            if (p.toString().toLowerCase().endsWith(".jar")) {
+            String s = p.toString().toLowerCase();
+
+            // Si es archivo .jar o .exe, devolvemos su carpeta
+            if (Files.isRegularFile(p) || s.endsWith(".jar") || s.endsWith(".exe")) {
                 return p.getParent();
             }
-            // Si estás en IDE (clases), devuelve el directorio actual
+
+            // Si ya es carpeta, la devolvemos
             return p;
+
         } catch (Exception e) {
-            return Paths.get(System.getProperty("user.dir"));
+            return Paths.get(System.getProperty("user.dir")).toAbsolutePath().normalize();
         }
     }
+
     /**
      * Busca el archivo help_set.hs en varias ubicaciones típicas:
      *
@@ -150,35 +167,53 @@ public class CalculadoraApp extends JFrame {
      *
      * Devuelve la URL del helpset si existe; si no, lanza una excepción con diagnóstico.
      */
+    /**
+     * Busca help_set.hs en ubicaciones típicas de:
+     * - IntelliJ (user.dir suele ser la raíz del proyecto)
+     * - Ejecutar el JAR desde /recursos
+     * - Ejecutar el EXE desde /ejecutable (Launch4j), donde recursos está en ..\recursos
+     */
     private URL locateHelpSetURL() throws Exception {
-        Path jarDir = getJarDirectory();
-        Path userDir = Paths.get(System.getProperty("user.dir"));
+        Path baseFromCodeSource = getAppBaseDir();
+        Path userDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath().normalize();
 
-        Path[] candidates = new Path[] {
-                // Caso “producción”: calculadora.jar está en ...\recursos\ y help en ...\recursos\help\
-                jarDir.resolve("help").resolve("help_set.hs"),
+        // Usamos LinkedHashSet para evitar duplicados manteniendo orden
+        Set<Path> candidates = new LinkedHashSet<>();
 
-                // Caso “proyecto”: si jarDir fuera la raíz del proyecto
-                jarDir.resolve("recursos").resolve("help").resolve("help_set.hs"),
+        // Bases a probar
+        List<Path> bases = List.of(baseFromCodeSource, userDir);
 
-                // Caso IntelliJ: normalmente user.dir es la raíz del proyecto
-                userDir.resolve("recursos").resolve("help").resolve("help_set.hs"),
+        for (Path base : bases) {
+            // 1) help junto a la base
+            candidates.add(base.resolve("help").resolve("help_set.hs"));
 
-                // Alternativa si alguna vez pones help/ en la raíz
-                userDir.resolve("help").resolve("help_set.hs"),
-        };
+            // 2) recursos/help dentro de la base
+            candidates.add(base.resolve("recursos").resolve("help").resolve("help_set.hs"));
+
+            // 3) caso Launch4j: base = ...\ejecutable  -> ..\recursos\help
+            candidates.add(base.resolve("..").resolve("recursos").resolve("help").resolve("help_set.hs"));
+
+            // 4) caso alternativo: ..\help
+            candidates.add(base.resolve("..").resolve("help").resolve("help_set.hs"));
+
+            // 5) si base ya es /recursos, entonces /recursos/help
+            if (base.getFileName() != null && base.getFileName().toString().equalsIgnoreCase("recursos")) {
+                candidates.add(base.resolve("help").resolve("help_set.hs"));
+            }
+        }
 
         for (Path p : candidates) {
-            if (p.toFile().exists()) {
+            p = p.toAbsolutePath().normalize();
+            if (Files.exists(p)) {
                 return p.toUri().toURL();
             }
         }
 
-        // Si no se encontró, devolvemos un error MUY claro con todas las rutas probadas.
         StringBuilder sb = new StringBuilder("No se encontró help_set.hs. Se intentó en:\n");
-        for (Path p : candidates) sb.append(" - ").append(p).append("\n");
+        for (Path p : candidates) sb.append(" - ").append(p.toAbsolutePath().normalize()).append("\n");
         throw new IllegalStateException(sb.toString());
     }
+
 
 
     /**
@@ -187,18 +222,10 @@ public class CalculadoraApp extends JFrame {
      */
     private void initHelp() {
         try {
-            // Localizamos el help_set.hs como ya hacías
-            URL hsFileURL = locateHelpSetURL(); // .../recursos/help/help_set.hs
+            URL hsURL = locateHelpSetURL();
 
-            // Construimos la URL del directorio /help/ (base)
-            String hsStr = hsFileURL.toString();
-            int lastSlash = hsStr.lastIndexOf('/');
-            URL helpDirURL = new URL(hsStr.substring(0, lastSlash + 1)); // .../recursos/help/
-
-            // Cargamos el HelpSet usando el directorio como "base"
-            // y el nombre del helpset relativo a esa base
-            HelpSet hs = new HelpSet(null, new URL(helpDirURL, "help_set.hs"));
-
+            // Cargar el helpset desde disco
+            HelpSet hs = new HelpSet(null, hsURL);
             helpBroker = hs.createHelpBroker();
 
         } catch (Exception ex) {
@@ -208,6 +235,7 @@ public class CalculadoraApp extends JFrame {
             helpBroker = null;
         }
     }
+
 
 
 
