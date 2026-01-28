@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc version="1.0">
+    <tocitem text="Calculadora" target="bienvenida">
+        <tocitem text="Bienvenida" target="bienvenida"/>
+        <tocitem text="Modo básico" target="modoBasico"/>
+        <tocitem text="Modo avanzado" target="modoAvanzado"/>
+        <tocitem text="Atajos y errores" target="atajosErrores"/>
+    </tocitem>
+</toc>

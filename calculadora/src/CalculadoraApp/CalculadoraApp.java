@@ -6,6 +6,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * Calculadora con dos modos:
@@ -88,6 +95,9 @@ public class CalculadoraApp extends JFrame {
     private Dimension sizeBasico;
     private Dimension sizeAvanzado;
 
+    // JavaHelp
+    private HelpBroker helpBroker;
+
     // =========================
     // Constructor
     // =========================
@@ -96,7 +106,7 @@ public class CalculadoraApp extends JFrame {
 
         aplicarLookAndFeel();
         construirUI();
-
+        initHelp();
         // Configuración de ambos modos
         configurarBasico();
         configurarAvanzado();
@@ -110,6 +120,104 @@ public class CalculadoraApp extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    //JavaHelp
+    /**
+     * Devuelve el directorio donde está el JAR real de la aplicación.
+     * En tu estructura, eso debería ser ...\recursos\ (porque calculadora.jar está ahí).
+     */
+    private Path getJarDirectory() {
+        try {
+            URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+            Path p = Paths.get(location.toURI());
+
+            // Si apunta a un .jar, devolvemos la carpeta donde está
+            if (p.toString().toLowerCase().endsWith(".jar")) {
+                return p.getParent();
+            }
+            // Si estás en IDE (clases), devuelve el directorio actual
+            return p;
+        } catch (Exception e) {
+            return Paths.get(System.getProperty("user.dir"));
+        }
+    }
+    /**
+     * Busca el archivo help_set.hs en varias ubicaciones típicas:
+     *
+     * 1) JAR_DIR/help/help_set.hs          -> cuando se ejecuta desde un JAR en \recursos\
+     * 2) JAR_DIR/recursos/help/help_set.hs -> si el JAR_DIR es la raíz del proyecto
+     * 3) USER_DIR/recursos/help/help_set.hs-> ejecución desde IntelliJ (working dir = raíz proyecto)
+     * 4) USER_DIR/help/help_set.hs         -> alternativa si lo pones directamente en /help
+     *
+     * Devuelve la URL del helpset si existe; si no, lanza una excepción con diagnóstico.
+     */
+    private URL locateHelpSetURL() throws Exception {
+        Path jarDir = getJarDirectory();
+        Path userDir = Paths.get(System.getProperty("user.dir"));
+
+        Path[] candidates = new Path[] {
+                // Caso “producción”: calculadora.jar está en ...\recursos\ y help en ...\recursos\help\
+                jarDir.resolve("help").resolve("help_set.hs"),
+
+                // Caso “proyecto”: si jarDir fuera la raíz del proyecto
+                jarDir.resolve("recursos").resolve("help").resolve("help_set.hs"),
+
+                // Caso IntelliJ: normalmente user.dir es la raíz del proyecto
+                userDir.resolve("recursos").resolve("help").resolve("help_set.hs"),
+
+                // Alternativa si alguna vez pones help/ en la raíz
+                userDir.resolve("help").resolve("help_set.hs"),
+        };
+
+        for (Path p : candidates) {
+            if (p.toFile().exists()) {
+                return p.toUri().toURL();
+            }
+        }
+
+        // Si no se encontró, devolvemos un error MUY claro con todas las rutas probadas.
+        StringBuilder sb = new StringBuilder("No se encontró help_set.hs. Se intentó en:\n");
+        for (Path p : candidates) sb.append(" - ").append(p).append("\n");
+        throw new IllegalStateException(sb.toString());
+    }
+
+
+    /**
+     * Inicializa JavaHelp.
+     * Importante: en IntelliJ no hay JAR, por eso buscamos help_set.hs en varias rutas.
+     */
+    private void initHelp() {
+        try {
+            // Localizamos el help_set.hs como ya hacías
+            URL hsFileURL = locateHelpSetURL(); // .../recursos/help/help_set.hs
+
+            // Construimos la URL del directorio /help/ (base)
+            String hsStr = hsFileURL.toString();
+            int lastSlash = hsStr.lastIndexOf('/');
+            URL helpDirURL = new URL(hsStr.substring(0, lastSlash + 1)); // .../recursos/help/
+
+            // Cargamos el HelpSet usando el directorio como "base"
+            // y el nombre del helpset relativo a esa base
+            HelpSet hs = new HelpSet(null, new URL(helpDirURL, "help_set.hs"));
+
+            helpBroker = hs.createHelpBroker();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo cargar la ayuda.\n" + ex.getMessage(),
+                    "Ayuda", JOptionPane.ERROR_MESSAGE);
+            helpBroker = null;
+        }
+    }
+
+
+
+    private void showHelp() {
+        if (helpBroker == null) return;
+        try { helpBroker.setCurrentID("bienvenida"); } catch (Exception ignored) {}
+        helpBroker.setDisplayed(true);
+    }
+
+
 
     // =========================================================
     //  UI: Look & Feel / Menu / Panels
@@ -176,6 +284,20 @@ public class CalculadoraApp extends JFrame {
         miSalir.addActionListener(e -> dispose());
         menuOpciones.add(miSalir);
         bar.add(menuOpciones);
+        JMenu menuAyuda = new JMenu("Ayuda");
+        JMenuItem miVerAyuda = new JMenuItem("Ver ayuda");
+        miVerAyuda.addActionListener(e -> showHelp());
+        menuAyuda.add(miVerAyuda);
+        bar.add(menuAyuda);
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "HELP_F1");
+
+        getRootPane().getActionMap().put("HELP_F1", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) {
+                showHelp();
+            }
+        });
+
 
         return bar;
     }
@@ -850,20 +972,31 @@ public class CalculadoraApp extends JFrame {
         basicDeleteDispatcherInstalled = true;
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+
             // Solo modo BASIC
             if (currentMode != Mode.BASIC) return false;
 
-            // Solo en KEY_PRESSED para evitar doble borrado (KEY_TYPED/RELEASED)
+            // Solo KEY_PRESSED (evita doble borrado)
             if (e.getID() != KeyEvent.KEY_PRESSED) return false;
 
             int code = e.getKeyCode();
-            if (code == KeyEvent.VK_BACK_SPACE || code == KeyEvent.VK_DELETE) {
-                basicoBorrarUltimo();
-                return true; // consumimos -> nadie más procesa la tecla
-            }
-            return false;
+            if (code != KeyEvent.VK_BACK_SPACE && code != KeyEvent.VK_DELETE) return false;
+
+            // ✅ CLAVE: SOLO interceptar si el foco está dentro de ESTA ventana (la calculadora)
+            Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+            if (focusOwner == null) return false;
+
+            Window w = SwingUtilities.getWindowAncestor(focusOwner);
+
+            // Si el foco NO está en nuestra ventana, NO consumimos nada (ej: JavaHelp)
+            if (w != this) return false;
+
+            // Si estamos aquí: foco dentro de la calculadora -> borramos carácter
+            basicoBorrarUltimo();
+            return true; // consumimos
         });
     }
+
 
     /**
      * Ejecuta una acción solo si estamos en modo BASIC.

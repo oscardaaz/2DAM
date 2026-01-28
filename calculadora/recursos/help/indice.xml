@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index version="1.0">
+    <indexitem text="Ayuda" target="bienvenida"/>
+    <indexitem text="Básico" target="modoBasico"/>
+    <indexitem text="Avanzado" target="modoAvanzado"/>
+    <indexitem text="Conversión" target="modoAvanzado"/>
+    <indexitem text="HEX" target="modoAvanzado"/>
+    <indexitem text="BIN" target="modoAvanzado"/>
+    <indexitem text="OCT" target="modoAvanzado"/>
+    <indexitem text="DEC" target="modoAvanzado"/>
+    <indexitem text="División por cero" target="atajosErrores"/>
+    <indexitem text="F1" target="atajosErrores"/>
+</index>

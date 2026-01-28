@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0">
+    <mapID target="bienvenida"    url="html/Bienvenida.html"/>
+    <mapID target="modoBasico"    url="html/ModoBasico.html"/>
+    <mapID target="modoAvanzado"  url="html/ModoAvanzado.html"/>
+    <mapID target="atajosErrores" url="html/AtajosYErrores.html"/>
+</map>
