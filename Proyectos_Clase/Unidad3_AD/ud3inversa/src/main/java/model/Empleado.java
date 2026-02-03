@@ -16,7 +16,7 @@ public class Empleado {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_depto", nullable = false)
-    private Departamento depto;
+    private Departamento departamento;
 
     @OneToOne(mappedBy = "empleado")
     private EmpleadoDatosProf empleadoDatosProf;
@@ -37,20 +37,27 @@ public class Empleado {
         this.nomEmp = nomEmp;
     }
 
-    public Departamento getDepto() {
-        return depto;
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
-    public void setDepto(Departamento idDepto) {
-        this.depto = idDepto;
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
     }
 
     public EmpleadoDatosProf getEmpleadoDatosProf() {
         return empleadoDatosProf;
     }
 
+//    public void setEmpleadoDatosProf(EmpleadoDatosProf empleadoDatosProf) {
+//        this.empleadoDatosProf = empleadoDatosProf;
+//    }
+
     public void setEmpleadoDatosProf(EmpleadoDatosProf empleadoDatosProf) {
         this.empleadoDatosProf = empleadoDatosProf;
+        if (empleadoDatosProf != null) {
+            empleadoDatosProf.setEmpleado(this);
+        }
     }
 
 }

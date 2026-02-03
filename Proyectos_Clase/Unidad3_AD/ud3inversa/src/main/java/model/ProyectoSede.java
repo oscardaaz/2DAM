@@ -1,8 +1,7 @@
 package model;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "proyecto_sede", schema = "inversa", indexes = {
@@ -12,21 +11,21 @@ public class ProyectoSede {
     @EmbeddedId
     private ProyectoSedeId id;
 
+    // @MapsId hace referencia a que es PK y FK a la vez en la tabla proyectoSede
     @MapsId("idProy")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_proy", nullable = false)
     private Proyecto proyecto;
 
+    // @MapsId hace referencia a que es PK y FK a la vez en la tabla proyectoSede
     @MapsId("idSede")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_sede", nullable = false)
     private Sede sede;
 
-    @Column(name = "f_inicio", nullable = false)
-    private LocalDate fInicio;
-
-    @Column(name = "f_fin")
-    private LocalDate fFin;
+    @ColumnDefault("0")
+    @Column(name = "num_empleados_asignados", nullable = false)
+    private Integer numEmpleadosAsignados;
 
     public ProyectoSedeId getId() {
         return id;
@@ -40,32 +39,24 @@ public class ProyectoSede {
         return proyecto;
     }
 
-    public void setProyecto(Proyecto idProy) {
-        this.proyecto = idProy;
+    public void setProyecto(Proyecto proyecto) {
+        this.proyecto = proyecto;
     }
 
     public Sede getSede() {
         return sede;
     }
 
-    public void setSede(Sede idSede) {
-        this.sede = idSede;
+    public void setSede(Sede sede) {
+        this.sede = sede;
     }
 
-    public LocalDate getFInicio() {
-        return fInicio;
+    public Integer getNumEmpleadosAsignados() {
+        return numEmpleadosAsignados;
     }
 
-    public void setFInicio(LocalDate fInicio) {
-        this.fInicio = fInicio;
-    }
-
-    public LocalDate getFFin() {
-        return fFin;
-    }
-
-    public void setFFin(LocalDate fFin) {
-        this.fFin = fFin;
+    public void setNumEmpleadosAsignados(Integer numEmpleadosAsignados) {
+        this.numEmpleadosAsignados = numEmpleadosAsignados;
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Embeddable
 public class ProyectoSedeId implements Serializable {
-    private static final long serialVersionUID = 3634027638709231000L;
+    // private static final long serialVersionUID = 3634027638709231000L;
     @Column(name = "id_proy", nullable = false)
     private Integer idProy;
 
@@ -36,9 +36,9 @@ public class ProyectoSedeId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ProyectoSedeId entity = (ProyectoSedeId) o;
-        return Objects.equals(this.idProy, entity.idProy) &&
-                Objects.equals(this.idSede, entity.idSede);
+        ProyectoSedeId that = (ProyectoSedeId) o;
+        return Objects.equals(this.idProy, that.idProy) &&
+                Objects.equals(this.idSede, that.idSede);
     }
 
     @Override
