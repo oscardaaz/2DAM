@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import model.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class MainJPA {
 
@@ -20,10 +22,10 @@ public class MainJPA {
 
 //            tarea1_insertarDepartamento(em);
 //            tarea2_insertarEmpleadoConDatosProf(em);
-            tarea3_consultarEmpleadosDeSede(em);
+//            tarea3_consultarEmpleadosDeSede(em);
 //            tarea4_modificarSueldoEmpleado(em);
 //            tarea5_asignarProyectoASede(em);
-//            tarea6_borrarEmpleado(em);
+            tarea6_borrarEmpleado(em);
 
         } catch (Exception e) {
             if (em != null && em.isOpen()) em.close();
@@ -99,7 +101,19 @@ public class MainJPA {
     // mostrando sus nombres
     // -----------------------------------------------------------------
     private static void tarea3_consultarEmpleadosDeSede(EntityManager em) {
+        EntityTransaction tx = em.getTransaction();
 
+        List<Empleado> lista = new ArrayList<>();
+        try {
+
+         //   TypedQuery<Empleado> query = em.createQuery("SELECT e FROM Empleado e, Empleado.class);
+
+
+        }
+        catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al buscar todos los empleados: " + e.getMessage());
+        }
 
     }
 
@@ -107,6 +121,25 @@ public class MainJPA {
     // TAREA 4: Modificar el sueldo de un empleado
     // -----------------------------------------------------------------
     private static void tarea4_modificarSueldoEmpleado(EntityManager em) {
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            Integer id = 6;
+            EmpleadoDatosProf empleado = em.find(EmpleadoDatosProf.class,id);
+            if (empleado != null){
+                tx.begin();
+                empleado.setSueldoBrutoAnual(BigDecimal.valueOf(99999.99));
+                tx.commit();
+            }
+            else {
+                System.out.println("El empleado con id: "+ id+ " no existe");
+            }
+
+        }
+        catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al buscar todos los empleados: " + e.getMessage());
+        }
 
 
     }
@@ -124,6 +157,29 @@ public class MainJPA {
     // -----------------------------------------------------------------
     private static void tarea6_borrarEmpleado(EntityManager em) {
 
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            Integer id_empleado_datos_prof = 8;
+            EmpleadoDatosProf edp = em.find(EmpleadoDatosProf.class,id_empleado_datos_prof);
+            Empleado empleado = edp.getEmpleado();
+
+            if (edp != null){
+
+                tx.begin();
+                em.remove(empleado);
+                em.remove(edp);
+                tx.commit();
+            }
+            else {
+                System.out.println("El empleado con id: "+ id_empleado_datos_prof+ " no existe");
+            }
+
+        }
+        catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al buscar todos los empleados: " + e.getMessage());
+        }
 
     }
 

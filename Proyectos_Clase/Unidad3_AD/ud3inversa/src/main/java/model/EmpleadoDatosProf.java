@@ -60,4 +60,13 @@ public class EmpleadoDatosProf {
         this.sueldoBrutoAnual = sueldoBrutoAnual;
     }
 
+    @Override
+    public String toString() {
+        return "EmpleadoDatosProf{" +
+                "id=" + id +
+                ", empleado=" + empleado +
+                ", categoria='" + categoria + '\'' +
+                ", sueldoBrutoAnual=" + sueldoBrutoAnual +
+                '}';
+    }
 }
