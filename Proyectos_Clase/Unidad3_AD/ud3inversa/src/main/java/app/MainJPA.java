@@ -75,7 +75,7 @@ public class MainJPA {
             Empleado empleado = new Empleado();
             empleado.setDepartamento(departamento);
             empleado.setDni("689155T");
-            empleado.setNomEmp("Daniel Montero Ruiz");
+            empleado.setNomEmp("Jorge Viana Gomez");
             departamento.addEmpleado(empleado);
 
             EmpleadoDatosProf edp = new EmpleadoDatosProf();
@@ -124,7 +124,7 @@ public class MainJPA {
         EntityTransaction tx = em.getTransaction();
 
         try {
-            Integer id = 6;
+            Integer id = 3;
             EmpleadoDatosProf empleado = em.find(EmpleadoDatosProf.class,id);
             if (empleado != null){
                 tx.begin();
@@ -160,20 +160,33 @@ public class MainJPA {
         EntityTransaction tx = em.getTransaction();
 
         try {
-            Integer id_empleado_datos_prof = 8;
-            EmpleadoDatosProf edp = em.find(EmpleadoDatosProf.class,id_empleado_datos_prof);
-            Empleado empleado = edp.getEmpleado();
+            Integer id = 8;
+           // EmpleadoDatosProf edp = em.find(EmpleadoDatosProf.class,id_empleado_datos_prof);
+            //Empleado empleado = edp.getEmpleado();
+            tx.begin();
+        Departamento departamento = em.find(Departamento.class,5);
 
-            if (edp != null){
+        Empleado empleado = em.find(Empleado.class,"7612343Y");
+        empleado.getEmpleadoDatosProf();
+        EmpleadoDatosProf edp = new EmpleadoDatosProf();
 
-                tx.begin();
-                em.remove(empleado);
-                em.remove(edp);
-                tx.commit();
+            for (Empleado e : departamento.getEmpleados()){
+                System.out.println(e);
             }
-            else {
-                System.out.println("El empleado con id: "+ id_empleado_datos_prof+ " no existe");
+
+            edp.setEmpleado(empleado);
+            empleado.setEmpleadoDatosProf(edp);
+
+            System.out.println();
+            departamento.removeEmpleado(empleado);
+
+            for (Empleado e : departamento.getEmpleados()){
+                System.out.println(e);
             }
+            em.remove(edp);
+            em.remove(empleado);
+
+        tx.commit();
 
         }
         catch (Exception e) {
