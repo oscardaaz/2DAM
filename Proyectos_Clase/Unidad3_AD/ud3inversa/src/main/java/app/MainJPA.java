@@ -17,7 +17,6 @@ public class MainJPA {
 
         EntityManager em = null;
         try {
-
             em = emf.createEntityManager();
 
 //            tarea1_insertarDepartamento(em);
@@ -25,9 +24,12 @@ public class MainJPA {
 //            tarea3_consultarEmpleadosDeSede(em);
 //            tarea4_modificarSueldoEmpleado(em);
 //            tarea5_asignarProyectoASede(em);
-            tarea6_borrarEmpleado(em);
+//            tarea6_borrarEmpleado(em);
 
         } catch (Exception e) {
+            System.err.println("Error en el main " + e.getMessage());
+
+        } finally {
             if (em != null && em.isOpen()) em.close();
             if (emf != null && emf.isOpen()) emf.close();
         }
@@ -40,22 +42,26 @@ public class MainJPA {
     // -----------------------------------------------------------------
     private static void tarea1_insertarDepartamento(EntityManager em) {
 
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = null;
         try {
+            tx = em.getTransaction();
             tx.begin();
-            Sede sede = em.find(Sede.class, 1);
+            Sede sede = em.find(Sede.class, 2);
             Departamento departamento = new Departamento();
-            departamento.setNomDepto("Informatica");
+            departamento.setNomDepto("Recortes");
             departamento.setSede(sede);
 
             sede.addDepartamento(departamento);
+
             em.persist(departamento);
+
             tx.commit();
 
+            System.out.println("Departamento: " + departamento.getNomDepto() + " en sede con id: " + sede.getId());
         } catch (Exception e) {
 
             if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Error al insertar departamento " + e.getMessage());
+            System.err.println("Error al insertar un departamento " + e.getMessage());
 
         }
 
@@ -67,8 +73,9 @@ public class MainJPA {
     // -----------------------------------------------------------------
     private static void tarea2_insertarEmpleadoConDatosProf(EntityManager em) {
 
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = null;
         try {
+            tx = em.getTransaction();
             tx.begin();
 
             Departamento departamento = em.find(Departamento.class, 5);
@@ -101,16 +108,27 @@ public class MainJPA {
     // mostrando sus nombres
     // -----------------------------------------------------------------
     private static void tarea3_consultarEmpleadosDeSede(EntityManager em) {
-        EntityTransaction tx = em.getTransaction();
 
-        List<Empleado> lista = new ArrayList<>();
+        EntityTransaction tx = null;
+
         try {
 
-         //   TypedQuery<Empleado> query = em.createQuery("SELECT e FROM Empleado e, Empleado.class);
+            tx = em.getTransaction();
+            Sede sede = em.find(Sede.class, 1);
+            if (sede != null) {
+                int i = 1;
+                System.out.println("Empleados de la sede: " + sede.getNomSede());
+                for (Departamento departamento : sede.getDepartamentos()) {
+                    System.out.println("Departamento: " + departamento.getNomDepto());
+                    for (Empleado empleado : departamento.getEmpleados()) {
+                        System.out.println("\tEmpleado " + i++ + ": " + empleado.getNomEmp() + " con DNI: " + empleado.getDni());
+                    }
+                }
+            } else {
+                System.out.println("No existe la sede con id: ");
+            }
 
-
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
             System.err.println("Error al buscar todos los empleados: " + e.getMessage());
         }
@@ -121,24 +139,23 @@ public class MainJPA {
     // TAREA 4: Modificar el sueldo de un empleado
     // -----------------------------------------------------------------
     private static void tarea4_modificarSueldoEmpleado(EntityManager em) {
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = null;
 
         try {
+            tx = em.getTransaction();
             Integer id = 3;
-            EmpleadoDatosProf empleado = em.find(EmpleadoDatosProf.class,id);
-            if (empleado != null){
+            EmpleadoDatosProf empleado = em.find(EmpleadoDatosProf.class, id);
+            if (empleado != null) {
                 tx.begin();
                 empleado.setSueldoBrutoAnual(BigDecimal.valueOf(99999.99));
                 tx.commit();
-            }
-            else {
-                System.out.println("El empleado con id: "+ id+ " no existe");
+            } else {
+                System.out.println("El empleado con id: " + id + " no existe");
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Error al buscar todos los empleados: " + e.getMessage());
+            System.err.println("Error al modificar el sueldo de un empleado: " + e.getMessage());
         }
 
 
@@ -148,8 +165,37 @@ public class MainJPA {
     // TAREA 5: Asignar un proyecto a una sede
     // -----------------------------------------------------------------
     private static void tarea5_asignarProyectoASede(EntityManager em) {
+        EntityTransaction tx = null;
+        try {
+            tx = em.getTransaction();
+            tx.begin();
 
+            Integer idSede = 2, idProyecto = 1;
 
+            Sede sede = em.find(Sede.class, idSede);
+            Proyecto proyecto = em.find(Proyecto.class, idProyecto);
+
+            ProyectoSede proyectoSede = new ProyectoSede();
+
+            ProyectoSedeId id = new ProyectoSedeId();
+            id.setIdSede(sede.getId());
+            id.setIdProy(proyecto.getId());
+
+            proyectoSede.setId(id);
+            proyectoSede.setSede(sede);
+            proyectoSede.setProyecto(proyecto);
+            proyectoSede.setNumEmpleadosAsignados(8);
+
+            proyecto.addProyectoSede(proyectoSede);
+            sede.addProyectoSede(proyectoSede);
+
+            em.persist(proyectoSede);
+            tx.commit();
+            System.out.println("Proyecto: " + proyecto.getId() + " asignado a sede: " + sede.getId());
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Error al asignar un proyecto a una sede: " + e.getMessage());
+        }
     }
 
     // -----------------------------------------------------------------
@@ -157,41 +203,36 @@ public class MainJPA {
     // -----------------------------------------------------------------
     private static void tarea6_borrarEmpleado(EntityManager em) {
 
-        EntityTransaction tx = em.getTransaction();
+        EntityTransaction tx = null;
 
         try {
-            Integer id = 8;
-           // EmpleadoDatosProf edp = em.find(EmpleadoDatosProf.class,id_empleado_datos_prof);
-            //Empleado empleado = edp.getEmpleado();
-            tx.begin();
-        Departamento departamento = em.find(Departamento.class,5);
+            tx = em.getTransaction();
 
-        Empleado empleado = em.find(Empleado.class,"7612343Y");
-        empleado.getEmpleadoDatosProf();
-        EmpleadoDatosProf edp = new EmpleadoDatosProf();
+            Integer id = 9;
+            EmpleadoDatosProf edp = em.find(EmpleadoDatosProf.class, id);
 
-            for (Empleado e : departamento.getEmpleados()){
-                System.out.println(e);
+            if (edp != null) {
+
+                Empleado empleado = edp.getEmpleado();
+                if (empleado != null) {
+                    tx.begin();
+                    Departamento departamento = empleado.getDepartamento();
+                    departamento.removeEmpleado(empleado);
+
+                    em.remove(edp);
+                    em.remove(empleado);
+                    System.out.println("Empleado eliminado: " + empleado.getNomEmp() + " con DNI: " + empleado.getDni());
+                    tx.commit();
+                }
+
+            } else {
+                System.out.println("El empleado con id: " + id + " no ha sido encontrado");
             }
 
-            edp.setEmpleado(empleado);
-            empleado.setEmpleadoDatosProf(edp);
 
-            System.out.println();
-            departamento.removeEmpleado(empleado);
-
-            for (Empleado e : departamento.getEmpleados()){
-                System.out.println(e);
-            }
-            em.remove(edp);
-            em.remove(empleado);
-
-        tx.commit();
-
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Error al buscar todos los empleados: " + e.getMessage());
+            System.err.println("Error al borrar todos los empleados: " + e.getMessage());
         }
 
     }
