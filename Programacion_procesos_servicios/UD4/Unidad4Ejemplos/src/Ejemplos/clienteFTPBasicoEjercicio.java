@@ -4,7 +4,6 @@ import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -13,8 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
-public class clienteFTPBasico extends JFrame {
-	private static final long serialVersionUID = 1L;
+public class clienteFTPBasicoEjercicio extends JFrame {
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	//campos de cabecera parte superior
 	static JTextField cab = new JTextField();
@@ -52,7 +52,7 @@ public class clienteFTPBasico extends JFrame {
 	static String ficheroSelec ="";
 
 	// constructor
-	public clienteFTPBasico() throws IOException {
+	public clienteFTPBasicoEjercicio() throws IOException {
 		super("CLIENTE BÁSICO FTP");
 
 		// Crear diálogo de conexión
