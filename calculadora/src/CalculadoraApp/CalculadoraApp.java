@@ -11,10 +11,7 @@ import javax.help.HelpSet;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,11 +29,12 @@ import java.util.Set;
  *    - Barra de expresión (ej: "5 + 5", y al "=" -> "5 + 5 =")
  *    - IMPORTANTE: Backspace/Delete del teclado borra carácter a carácter (como una calculadora normal).
  *
- * 2) ADVANCED (Conversor de bases):
+ * 2) ADVANCED (Conversor de bases + Operaciones):
  *    - Base 2/8/10/16
  *    - Botones 0-9 y A-F (activados/desactivados según base)
  *    - Campo único de entrada
  *    - 4 salidas con conversiones BIN/OCT/DEC/HEX
+ *    - Operaciones básicas (+, -, *, /) que funcionan en la base seleccionada
  *
  * Diseño:
  * - En modo BASIC el display NO es editable: evitamos que Swing escriba por sí mismo.
@@ -54,15 +52,24 @@ public class CalculadoraApp extends JFrame {
     // =========================
     // Estado BASIC (motor de cálculo)
     // =========================
-    private BigDecimal acumulado = null;       // Operando A
-    private String operacionPendiente = null;  // "+", "-", "*", "/"
-    private boolean limpiarEnSiguiente = false;// Si true, el siguiente dígito empieza B
-    private String ultimaExpresion = "";       // Para mostrar "A op B" al pulsar "="
+    private BigDecimal acumulado = null;
+    private String operacionPendiente = null;
+    private boolean limpiarEnSiguiente = false;
+    private String ultimaExpresion = "";
 
     // =========================
     // Estado ADVANCED
     // =========================
     private int baseActual = 10;
+
+    // Motor de cálculo para modo avanzado
+    private BigDecimal avanzadoAcumulado = null;
+    private String avanzadoOperacionPendiente = null;
+    private boolean avanzadoLimpiarEnSiguiente = false;
+    private String avanzadoUltimaExpresion = "";
+
+    // Evita que el DocumentFilter interprete setText() programáticos como tecleo del usuario
+    private boolean avanzadoProgrammaticUpdate = false;
 
     // =========================
     // UI general (cards)
@@ -74,7 +81,7 @@ public class CalculadoraApp extends JFrame {
     // UI BASIC
     // =========================
     private final JTextField txtBasicoDisplay = new JTextField();
-    private final JLabel lblBasicExpr = new JLabel(" "); // barra de expresión
+    private final JLabel lblBasicExpr = new JLabel(" ");
 
     // Dispatcher (para no instalarlo dos veces)
     private boolean basicDeleteDispatcherInstalled = false;
@@ -88,6 +95,7 @@ public class CalculadoraApp extends JFrame {
     private final JTextField txtOutDec = new JTextField();
     private final JTextField txtOutHex = new JTextField();
     private final JLabel lblAvanzadoBase = new JLabel("Base seleccionada: 10");
+    private final JLabel lblAvanzadoExpr = new JLabel(" "); // Barra de expresión
 
     private final ButtonGroup buttonGroupBases = new ButtonGroup();
     private final JRadioButton rdbBin = new JRadioButton("BIN");
@@ -113,11 +121,9 @@ public class CalculadoraApp extends JFrame {
         aplicarLookAndFeel();
         construirUI();
         initHelp();
-        // Configuración de ambos modos
         configurarBasico();
         configurarAvanzado();
 
-        // Ajuste tamaños y modo inicial
         calcularTamanosPorModo();
         setMode(Mode.BASIC);
 
@@ -126,77 +132,35 @@ public class CalculadoraApp extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    //JavaHelp
-    /**
-     * Devuelve el directorio donde está el JAR real de la aplicación.
-     * En tu estructura, eso debería ser ...\recursos\ (porque calculadora.jar está ahí).
-     */
-    /**
-     * Devuelve un directorio base "razonable" para la ejecución:
-     * - Si estamos en un JAR -> carpeta que contiene el JAR.
-     * - Si Launch4j devuelve la ruta del .exe como CodeSource -> carpeta que contiene el .exe.
-     * - Si estamos en IDE (clases) -> el directorio devuelto por CodeSource.
-     */
+
+    // =========================================================
+    //  JavaHelp
+    // =========================================================
     private Path getAppBaseDir() {
         try {
             URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
             Path p = Paths.get(location.toURI()).toAbsolutePath().normalize();
-
             String s = p.toString().toLowerCase();
-
-            // Si es archivo .jar o .exe, devolvemos su carpeta
             if (Files.isRegularFile(p) || s.endsWith(".jar") || s.endsWith(".exe")) {
                 return p.getParent();
             }
-
-            // Si ya es carpeta, la devolvemos
             return p;
-
         } catch (Exception e) {
             return Paths.get(System.getProperty("user.dir")).toAbsolutePath().normalize();
         }
     }
 
-    /**
-     * Busca el archivo help_set.hs en varias ubicaciones típicas:
-     *
-     * 1) JAR_DIR/help/help_set.hs          -> cuando se ejecuta desde un JAR en \recursos\
-     * 2) JAR_DIR/recursos/help/help_set.hs -> si el JAR_DIR es la raíz del proyecto
-     * 3) USER_DIR/recursos/help/help_set.hs-> ejecución desde IntelliJ (working dir = raíz proyecto)
-     * 4) USER_DIR/help/help_set.hs         -> alternativa si lo pones directamente en /help
-     *
-     * Devuelve la URL del helpset si existe; si no, lanza una excepción con diagnóstico.
-     */
-    /**
-     * Busca help_set.hs en ubicaciones típicas de:
-     * - IntelliJ (user.dir suele ser la raíz del proyecto)
-     * - Ejecutar el JAR desde /recursos
-     * - Ejecutar el EXE desde /ejecutable (Launch4j), donde recursos está en ..\recursos
-     */
     private URL locateHelpSetURL() throws Exception {
         Path baseFromCodeSource = getAppBaseDir();
         Path userDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath().normalize();
-
-        // Usamos LinkedHashSet para evitar duplicados manteniendo orden
         Set<Path> candidates = new LinkedHashSet<>();
-
-        // Bases a probar
         List<Path> bases = List.of(baseFromCodeSource, userDir);
 
         for (Path base : bases) {
-            // 1) help junto a la base
             candidates.add(base.resolve("help").resolve("help_set.hs"));
-
-            // 2) recursos/help dentro de la base
             candidates.add(base.resolve("recursos").resolve("help").resolve("help_set.hs"));
-
-            // 3) caso Launch4j: base = ...\ejecutable  -> ..\recursos\help
             candidates.add(base.resolve("..").resolve("recursos").resolve("help").resolve("help_set.hs"));
-
-            // 4) caso alternativo: ..\help
             candidates.add(base.resolve("..").resolve("help").resolve("help_set.hs"));
-
-            // 5) si base ya es /recursos, entonces /recursos/help
             if (base.getFileName() != null && base.getFileName().toString().equalsIgnoreCase("recursos")) {
                 candidates.add(base.resolve("help").resolve("help_set.hs"));
             }
@@ -214,20 +178,11 @@ public class CalculadoraApp extends JFrame {
         throw new IllegalStateException(sb.toString());
     }
 
-
-
-    /**
-     * Inicializa JavaHelp.
-     * Importante: en IntelliJ no hay JAR, por eso buscamos help_set.hs en varias rutas.
-     */
     private void initHelp() {
         try {
             URL hsURL = locateHelpSetURL();
-
-            // Cargar el helpset desde disco
             HelpSet hs = new HelpSet(null, hsURL);
             helpBroker = hs.createHelpBroker();
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "No se pudo cargar la ayuda.\n" + ex.getMessage(),
@@ -236,16 +191,11 @@ public class CalculadoraApp extends JFrame {
         }
     }
 
-
-
-
     private void showHelp() {
         if (helpBroker == null) return;
         try { helpBroker.setCurrentID("bienvenida"); } catch (Exception ignored) {}
         helpBroker.setDisplayed(true);
     }
-
-
 
     // =========================================================
     //  UI: Look & Feel / Menu / Panels
@@ -261,11 +211,6 @@ public class CalculadoraApp extends JFrame {
         } catch (Exception ignored) {}
     }
 
-    /**
-     * Construye UI:
-     * - JMenuBar arriba con "Modo"
-     * - CardLayout en el centro (BASIC/ADVANCED)
-     */
     private void construirUI() {
         setJMenuBar(crearMenuBar());
 
@@ -278,10 +223,6 @@ public class CalculadoraApp extends JFrame {
         root.add(pnlCards, BorderLayout.CENTER);
     }
 
-    /**
-     * Menú superior con selector de modos.
-     * Cumple requisito: "El usuario podrá elegir el modo desde un menú o selector".
-     */
     private JMenuBar crearMenuBar() {
         JMenuBar bar = new JMenuBar();
 
@@ -295,7 +236,6 @@ public class CalculadoraApp extends JFrame {
 
         miBasico.setSelected(true);
 
-        // Atajos para cambiar modo
         miBasico.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK));
         miAvanzado.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK));
 
@@ -306,35 +246,32 @@ public class CalculadoraApp extends JFrame {
         menuModo.add(miAvanzado);
         bar.add(menuModo);
 
-        // Menú placeholder para futuro
         JMenu menuOpciones = new JMenu("Opciones");
         JMenuItem miSalir = new JMenuItem("Salir");
         miSalir.addActionListener(e -> dispose());
         menuOpciones.add(miSalir);
         bar.add(menuOpciones);
+
         JMenu menuAyuda = new JMenu("Ayuda");
         JMenuItem miVerAyuda = new JMenuItem("Ver ayuda");
         miVerAyuda.addActionListener(e -> showHelp());
         menuAyuda.add(miVerAyuda);
         bar.add(menuAyuda);
+
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "HELP_F1");
-
         getRootPane().getActionMap().put("HELP_F1", new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) {
                 showHelp();
             }
         });
 
-
         return bar;
     }
 
-    /**
-     * Panel BASIC:
-     * - Barra expresión + display
-     * - Botonera
-     */
+    // =========================================================
+    //  Panel BASIC
+    // =========================================================
     private JPanel crearPanelBasico() {
         JPanel p = new JPanel(new BorderLayout(8, 8));
         p.setOpaque(false);
@@ -382,7 +319,6 @@ public class CalculadoraApp extends JFrame {
         }
         Add add = new Add();
 
-        // Botones: usan la misma lógica que el teclado
         JButton b7 = mkBtn("7", e -> basicoAppend("7"));
         JButton b8 = mkBtn("8", e -> basicoAppend("8"));
         JButton b9 = mkBtn("9", e -> basicoAppend("9"));
@@ -399,7 +335,7 @@ public class CalculadoraApp extends JFrame {
         JButton bRes = mkBtn("-", e -> basicoMinusInteligente());
 
         JButton b0 = mkBtn("0", e -> basicoAppend("0"));
-        JButton bDot = mkBtn(".", e -> basicoPunto()); // el teclado ES usa coma, también soportada
+        JButton bDot = mkBtn(".", e -> basicoPunto());
         JButton bSign = mkBtn("+/-", e -> basicoCambiarSigno());
         JButton bSum = mkBtn("+", e -> basicoSetOperacion("+"));
 
@@ -433,6 +369,9 @@ public class CalculadoraApp extends JFrame {
         return p;
     }
 
+    // =========================================================
+    //  Panel ADVANCED
+    // =========================================================
     private JPanel crearPanelAvanzado() {
         JPanel p = new JPanel(new BorderLayout(10, 10));
         p.setOpaque(false);
@@ -444,10 +383,18 @@ public class CalculadoraApp extends JFrame {
         c.insets = new Insets(4, 4, 4, 4);
         c.fill = GridBagConstraints.HORIZONTAL;
 
+        // Barra de expresión (igual que en BASIC)
+        lblAvanzadoExpr.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lblAvanzadoExpr.setForeground(new Color(90, 90, 90));
+        lblAvanzadoExpr.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        c.gridx = 0; c.gridy = 0; c.gridwidth = 6; c.weightx = 1;
+        top.add(lblAvanzadoExpr, c);
+
         txtAvanzadoEntrada.setFont(new Font("SansSerif", Font.PLAIN, 22));
         txtAvanzadoEntrada.setPreferredSize(new Dimension(10, 48));
 
-        c.gridx = 0; c.gridy = 0; c.gridwidth = 6; c.weightx = 1;
+        c.gridx = 0; c.gridy = 1; c.gridwidth = 6; c.weightx = 1;
         top.add(txtAvanzadoEntrada, c);
 
         buttonGroupBases.add(rdbBin);
@@ -460,7 +407,7 @@ public class CalculadoraApp extends JFrame {
         rdbDec.addActionListener(e -> setBaseActual(10));
         rdbHex.addActionListener(e -> setBaseActual(16));
 
-        c.gridy = 1; c.gridwidth = 1; c.weightx = 0;
+        c.gridy = 2; c.gridwidth = 1; c.weightx = 0;
         c.gridx = 0; top.add(rdbBin, c);
         c.gridx = 1; top.add(rdbOct, c);
         c.gridx = 2; top.add(rdbDec, c);
@@ -473,7 +420,7 @@ public class CalculadoraApp extends JFrame {
         btnAvClear.addActionListener(e -> avanzadoClear());
         top.add(btnAvClear, c);
 
-        c.gridx = 0; c.gridy = 2; c.gridwidth = 6; c.weightx = 1;
+        c.gridx = 0; c.gridy = 3; c.gridwidth = 6; c.weightx = 1;
         top.add(lblAvanzadoBase, c);
 
         p.add(top, BorderLayout.NORTH);
@@ -506,6 +453,10 @@ public class CalculadoraApp extends JFrame {
         cc.gridx = 0; cc.gridy = 0; cc.weightx = 0.40; cc.weighty = 1.0;
         center.add(digits, cc);
 
+        // Panel derecho: salidas + botones de operaciones
+        JPanel rightPanel = new JPanel(new BorderLayout(8, 8));
+        rightPanel.setOpaque(false);
+
         JPanel outs = new JPanel(new GridBagLayout());
         outs.setOpaque(false);
 
@@ -521,8 +472,34 @@ public class CalculadoraApp extends JFrame {
         addOutRow(outs, 2, "DEC:", txtOutDec);
         addOutRow(outs, 3, "HEX:", txtOutHex);
 
+        rightPanel.add(outs, BorderLayout.CENTER);
+
+        // Botones de operaciones (fila abajo)
+        JPanel ops = new JPanel(new GridLayout(1, 5, 6, 6));
+        ops.setOpaque(false);
+
+        JButton bOp1 = mkBtn("+", e -> avanzadoSetOperacion("+"));
+        JButton bOp2 = mkBtn("-", e -> avanzadoSetOperacion("-"));
+        JButton bOp3 = mkBtn("*", e -> avanzadoSetOperacion("*"));
+        JButton bOp4 = mkBtn("/", e -> avanzadoSetOperacion("/"));
+        JButton bOp5 = mkBtn("=", e -> avanzadoIgual());
+
+        bOp1.setPreferredSize(new Dimension(10, 36));
+        bOp2.setPreferredSize(new Dimension(10, 36));
+        bOp3.setPreferredSize(new Dimension(10, 36));
+        bOp4.setPreferredSize(new Dimension(10, 36));
+        bOp5.setPreferredSize(new Dimension(10, 36));
+
+        ops.add(bOp1);
+        ops.add(bOp2);
+        ops.add(bOp3);
+        ops.add(bOp4);
+        ops.add(bOp5);
+
+        rightPanel.add(ops, BorderLayout.SOUTH);
+
         cc.gridx = 1; cc.gridy = 0; cc.weightx = 0.60; cc.weighty = 1.0;
-        center.add(outs, cc);
+        center.add(rightPanel, cc);
 
         p.add(center, BorderLayout.CENTER);
         return p;
@@ -597,19 +574,11 @@ public class CalculadoraApp extends JFrame {
     //  BASIC: configuración
     // =========================================================
     private void configurarBasico() {
-        // No editable: nada de escritura "automática" del JTextField.
         txtBasicoDisplay.setEditable(false);
         txtBasicoDisplay.setFocusable(true);
         txtBasicoDisplay.setText("");
-
         setBasicExpr(" ");
-
-        // KeyBindings (números/operadores/igual/clear/decimal)
-        instalarKeyBindingsGlobales();
-
-        // MUY IMPORTANTE:
-        // Dispatcher global para asegurar Backspace/Delete aunque el foco esté en botones/menús.
-        instalarDispatcherBorradoBasico();
+        instalarDispatcherBorrado();
     }
 
     private void setBasicExpr(String s) {
@@ -624,11 +593,9 @@ public class CalculadoraApp extends JFrame {
         }
 
         String b = limpiarEnSiguiente ? "" : txtBasicoDisplay.getText().trim();
-
         String expr = formato(acumulado) + " " + operacionPendiente;
         if (!b.isEmpty()) expr += " " + b;
         if (conIgual) expr += " =";
-
         setBasicExpr(expr);
     }
 
@@ -644,11 +611,6 @@ public class CalculadoraApp extends JFrame {
         refrescarExpresionBasica(false);
     }
 
-    /**
-     * En teclado ES normalmente el separador decimal es ','.
-     * Como internamente parseamos con BigDecimal usando '.', aquí aceptamos
-     * tanto '.' como ',' y siempre almacenamos '.'.
-     */
     private void basicoPunto() {
         if (limpiarEnSiguiente) {
             txtBasicoDisplay.setText("0.");
@@ -697,7 +659,6 @@ public class CalculadoraApp extends JFrame {
 
             operacionPendiente = op;
             limpiarEnSiguiente = true;
-
             refrescarExpresionBasica(false);
 
         } catch (NumberFormatException ex) {
@@ -728,13 +689,11 @@ public class CalculadoraApp extends JFrame {
             BigDecimal res = basicoAplicar(acumulado, b, operacionPendiente);
 
             ultimaExpresion = formato(acumulado) + " " + operacionPendiente + " " + formato(b);
-
             txtBasicoDisplay.setText(formato(res));
 
             acumulado = null;
             operacionPendiente = null;
             limpiarEnSiguiente = true;
-
             refrescarExpresionBasica(true);
 
         } catch (NumberFormatException ex) {
@@ -754,10 +713,6 @@ public class CalculadoraApp extends JFrame {
         setBasicExpr(" ");
     }
 
-    /**
-     * Borrado carácter a carácter (como pediste).
-     * IMPORTANTE: se llama tanto desde KeyBindings como desde el KeyEventDispatcher.
-     */
     private void basicoBorrarUltimo() {
         if (limpiarEnSiguiente) {
             txtBasicoDisplay.setText("");
@@ -768,7 +723,6 @@ public class CalculadoraApp extends JFrame {
 
         String t = txtBasicoDisplay.getText();
         if (!t.isEmpty()) txtBasicoDisplay.setText(t.substring(0, t.length() - 1));
-
         refrescarExpresionBasica(false);
     }
 
@@ -784,7 +738,6 @@ public class CalculadoraApp extends JFrame {
         if (t.isEmpty()) txtBasicoDisplay.setText("-");
         else if (t.startsWith("-")) txtBasicoDisplay.setText(t.substring(1));
         else txtBasicoDisplay.setText("-" + t);
-
         refrescarExpresionBasica(false);
     }
 
@@ -794,13 +747,14 @@ public class CalculadoraApp extends JFrame {
     }
 
     // =========================================================
-    //  ADVANCED: configuración y lógica
+    //  ADVANCED: configuración
     // =========================================================
     private void configurarAvanzado() {
         instalarFiltroAvanzado();
-
+        instalarDispatcherBorrado();
         rdbDec.setSelected(true);
         setBaseActual(10);
+        setAvanzadoExpr(" ");
         convertirYMostrar();
     }
 
@@ -818,6 +772,7 @@ public class CalculadoraApp extends JFrame {
         }
         txtAvanzadoEntrada.setText(sb.toString());
         convertirYMostrar();
+        refrescarExpresionAvanzada(false);
     }
 
     private void actualizarBotonesPorBase() {
@@ -825,8 +780,15 @@ public class CalculadoraApp extends JFrame {
     }
 
     private void avanzadoAppend(String s) {
+        if (avanzadoLimpiarEnSiguiente) {
+            avanzadoProgrammaticUpdate = true;
+            txtAvanzadoEntrada.setText("");
+            avanzadoProgrammaticUpdate = false;
+            avanzadoLimpiarEnSiguiente = false;
+        }
         txtAvanzadoEntrada.setText(txtAvanzadoEntrada.getText() + s);
         convertirYMostrar();
+        refrescarExpresionAvanzada(false);
     }
 
     private int charToVal(char ch) {
@@ -860,8 +822,126 @@ public class CalculadoraApp extends JFrame {
     }
 
     private void avanzadoClear() {
+        avanzadoProgrammaticUpdate = true;
         txtAvanzadoEntrada.setText("");
+        avanzadoProgrammaticUpdate = false;
+        avanzadoAcumulado = null;
+        avanzadoOperacionPendiente = null;
+        avanzadoLimpiarEnSiguiente = false;
+        avanzadoUltimaExpresion = "";
+        setAvanzadoExpr(" ");
         convertirYMostrar();
+    }
+
+    // =========================================================
+    //  ADVANCED: operaciones
+    // =========================================================
+    private void setAvanzadoExpr(String s) {
+        lblAvanzadoExpr.setText(s == null || s.isBlank() ? " " : s);
+    }
+
+    private void refrescarExpresionAvanzada(boolean conIgual) {
+        if (avanzadoAcumulado == null || avanzadoOperacionPendiente == null) {
+            if (conIgual && !avanzadoUltimaExpresion.isBlank()) {
+                setAvanzadoExpr(avanzadoUltimaExpresion + " =");
+            } else {
+                setAvanzadoExpr(" ");
+            }
+            return;
+        }
+
+        String b = avanzadoLimpiarEnSiguiente ? "" : txtAvanzadoEntrada.getText().trim();
+        String expr = formatoEnBase(avanzadoAcumulado) + " " + avanzadoOperacionPendiente;
+        if (!b.isEmpty()) expr += " " + b;
+        if (conIgual) expr += " =";
+        setAvanzadoExpr(expr);
+    }
+
+    private BigDecimal avanzadoLeerEntrada() {
+        String t = txtAvanzadoEntrada.getText().trim().toUpperCase();
+        if (t.isEmpty()) throw new NumberFormatException("Introduce un número válido.");
+        try {
+            long valor = Long.parseLong(t, baseActual);
+            return new BigDecimal(valor);
+        } catch (NumberFormatException ex) {
+            throw new NumberFormatException("Número inválido en base " + baseActual);
+        }
+    }
+
+    private void avanzadoSetOperacion(String op) {
+        try {
+            BigDecimal actual = avanzadoLeerEntrada();
+
+            if (avanzadoAcumulado == null) {
+                avanzadoAcumulado = actual;
+            } else if (avanzadoOperacionPendiente != null && !avanzadoLimpiarEnSiguiente) {
+                avanzadoAcumulado = basicoAplicar(avanzadoAcumulado, actual, avanzadoOperacionPendiente);
+                avanzadoProgrammaticUpdate = true;
+                txtAvanzadoEntrada.setText(formatoEnBase(avanzadoAcumulado));
+                avanzadoProgrammaticUpdate = false;
+                convertirYMostrar();
+            }
+
+            avanzadoOperacionPendiente = op;
+            avanzadoLimpiarEnSiguiente = true;
+            refrescarExpresionAvanzada(false);
+
+        } catch (NumberFormatException ex) {
+            mostrarError("Número inválido.\n" + ex.getMessage());
+        } catch (ArithmeticException ex) {
+            mostrarError("Error aritmético: " + ex.getMessage());
+            avanzadoClear();
+        }
+    }
+
+    private void avanzadoIgual() {
+        try {
+            if (avanzadoOperacionPendiente == null || avanzadoAcumulado == null) return;
+
+            BigDecimal b = avanzadoLeerEntrada();
+            BigDecimal res = basicoAplicar(avanzadoAcumulado, b, avanzadoOperacionPendiente);
+
+            avanzadoUltimaExpresion = formatoEnBase(avanzadoAcumulado) + " " +
+                    avanzadoOperacionPendiente + " " + formatoEnBase(b);
+
+            avanzadoProgrammaticUpdate = true;
+            txtAvanzadoEntrada.setText(formatoEnBase(res));
+            avanzadoProgrammaticUpdate = false;
+            convertirYMostrar();
+
+            avanzadoAcumulado = null;
+            avanzadoOperacionPendiente = null;
+            avanzadoLimpiarEnSiguiente = true;
+            refrescarExpresionAvanzada(true);
+
+        } catch (NumberFormatException ex) {
+            mostrarError("Número inválido.\n" + ex.getMessage());
+        } catch (ArithmeticException ex) {
+            mostrarError("Error aritmético: " + ex.getMessage());
+            avanzadoClear();
+        }
+    }
+
+    private String formatoEnBase(BigDecimal d) {
+        if (d == null) return "";
+        long val = d.longValue();
+        return Long.toString(val, baseActual).toUpperCase();
+    }
+
+    private void avanzadoBorrarUltimo() {
+        if (avanzadoLimpiarEnSiguiente) {
+            avanzadoProgrammaticUpdate = true;
+            txtAvanzadoEntrada.setText("");
+            avanzadoProgrammaticUpdate = false;
+            avanzadoLimpiarEnSiguiente = false;
+            refrescarExpresionAvanzada(false);
+            return;
+        }
+
+        String t = txtAvanzadoEntrada.getText();
+        if (!t.isEmpty()) txtAvanzadoEntrada.setText(t.substring(0, t.length() - 1));
+        convertirYMostrar();
+        refrescarExpresionAvanzada(false);
     }
 
     private void instalarFiltroAvanzado() {
@@ -872,29 +952,61 @@ public class CalculadoraApp extends JFrame {
                 return v >= 0 && v < baseActual;
             }
 
-            private String filtrar(String text) {
+            private String sanitizarCompleto(String raw) {
+                if (raw == null) return "";
+                raw = raw.trim().toUpperCase();
+
+                boolean negativo = raw.startsWith("-");
+                String body = negativo ? raw.substring(1) : raw;
+
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < text.length(); i++) {
-                    char c = Character.toUpperCase(text.charAt(i));
+                for (int i = 0; i < body.length(); i++) {
+                    char c = body.charAt(i);
                     if (esValido(c)) sb.append(c);
                 }
+
+                // Permitimos "-" solo si hay algún dígito o si el usuario está empezando a teclear el signo
+                if (negativo) return "-" + sb;
                 return sb.toString();
+            }
+
+            private void aplicar(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+
+                String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
+
+                // Si el usuario va a introducir el segundo operando tras pulsar un operador, limpiamos antes de insertar
+                if (!avanzadoProgrammaticUpdate && avanzadoLimpiarEnSiguiente && text != null && !text.isEmpty()) {
+                    actual = "";
+                    offset = 0;
+                    length = 0;
+                    avanzadoLimpiarEnSiguiente = false;
+                    SwingUtilities.invokeLater(() -> refrescarExpresionAvanzada(false));
+                }
+
+                String insert = (text == null) ? "" : text;
+
+                // Componemos el nuevo texto "como si" Swing lo insertara, y después sanitizamos todo
+                String candidato = actual.substring(0, Math.min(offset, actual.length()))
+                        + insert
+                        + actual.substring(Math.min(offset + length, actual.length()));
+
+                String limpio = sanitizarCompleto(candidato);
+
+                fb.replace(0, fb.getDocument().getLength(), limpio, attrs);
+                SwingUtilities.invokeLater(() -> convertirYMostrar());
             }
 
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
                     throws BadLocationException {
-                if (string == null) return;
-                super.insertString(fb, offset, filtrar(string), attr);
-                SwingUtilities.invokeLater(() -> convertirYMostrar());
+                aplicar(fb, offset, 0, string, attr);
             }
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                     throws BadLocationException {
-                if (text == null) return;
-                super.replace(fb, offset, length, filtrar(text), attrs);
-                SwingUtilities.invokeLater(() -> convertirYMostrar());
+                aplicar(fb, offset, length, text, attrs);
             }
 
             @Override
@@ -905,8 +1017,10 @@ public class CalculadoraApp extends JFrame {
             }
         });
 
+
         txtAvanzadoEntrada.addFocusListener(new FocusAdapter() {
-            @Override public void focusLost(FocusEvent e) {
+            @Override
+            public void focusLost(FocusEvent e) {
                 txtAvanzadoEntrada.setText(txtAvanzadoEntrada.getText().toUpperCase());
             }
         });
@@ -915,18 +1029,6 @@ public class CalculadoraApp extends JFrame {
     // =========================================================
     //  TECLADO BASIC: KeyBindings globales + Dispatcher borrado
     // =========================================================
-
-    /**
-     * KeyBindings globales:
-     * - Números: fila superior y numpad
-     * - Operadores: caracter y numpad
-     * - Decimal: '.' y ',' (teclado ES) y numpad decimal
-     * - Igual: Enter y '='
-     * - Clear: Escape
-     *
-     * Nota: el borrado por BACKSPACE/DELETE lo aseguramos también con el dispatcher,
-     * porque algunos componentes "secuestran" esas teclas.
-     */
     private void instalarKeyBindingsGlobales() {
         JRootPane root = getRootPane();
         InputMap im = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -964,88 +1066,269 @@ public class CalculadoraApp extends JFrame {
         bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "OP_DIV_PAD",
                 e -> onBasicKey(() -> basicoSetOperacion("/")));
 
-        // Operadores por carácter (depende del layout, pero ayuda mucho)
-        bindChar(im, am, '+', "OP_ADD_CHAR", e -> onBasicKey(() -> basicoSetOperacion("+")));
-        bindChar(im, am, '*', "OP_MUL_CHAR", e -> onBasicKey(() -> basicoSetOperacion("*")));
-        bindChar(im, am, '/', "OP_DIV_CHAR", e -> onBasicKey(() -> basicoSetOperacion("/")));
-        bindChar(im, am, '-', "OP_SUB_CHAR", e -> onBasicKey(this::basicoMinusInteligente));
+        // Operadores por carácter - Compatibilidad ES/US
+        // En ES: + es Shift+], * es Shift+], / es Shift+7, - es tecla directa
+        // En US: + es Shift+=, * es Shift+8, / es /, - es -
 
-        // Igual: Enter y '='
+        // Suma: Shift++ (US) o la tecla que sea en ES
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.SHIFT_DOWN_MASK), "OP_ADD_SHIFT",
+                e -> onBasicKey(() -> basicoSetOperacion("+")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.SHIFT_DOWN_MASK), "OP_ADD_EQUALS",
+                e -> onBasicKey(() -> basicoSetOperacion("+")));
+
+        // Multiplicación: Shift+8 (US) y otros
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_8, InputEvent.SHIFT_DOWN_MASK), "OP_MUL_8",
+                e -> onBasicKey(() -> basicoSetOperacion("*")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.SHIFT_DOWN_MASK), "OP_MUL_BRACKET",
+                e -> onBasicKey(() -> basicoSetOperacion("*")));
+
+        // División: tecla / directa (US) o Shift+7 (ES)
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, 0), "OP_DIV_SLASH",
+                e -> onBasicKey(() -> basicoSetOperacion("/")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_7, InputEvent.SHIFT_DOWN_MASK), "OP_DIV_7",
+                e -> onBasicKey(() -> basicoSetOperacion("/")));
+
+        // Resta: tecla - directa (funciona en ambos)
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "OP_SUB_MINUS",
+                e -> onBasicKey(this::basicoMinusInteligente));
+
+        // Igual: Enter y tecla = (con y sin Shift para compatibilidad)
         bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "EQ_ENTER",
                 e -> onBasicKey(this::basicoIgual));
-        bindChar(im, am, '=', "EQ_CHAR",
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 0), "EQ_EQUALS",
+                e -> onBasicKey(this::basicoIgual));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.SHIFT_DOWN_MASK), "EQ_EQUALS_SHIFT",
                 e -> onBasicKey(this::basicoIgual));
 
         // Clear: Escape
         bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "CLR_ESC",
                 e -> onBasicKey(this::basicoClear));
 
-        // (Opcional) +/-: F9
+        // +/-: F9
         bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0), "SIGN_F9",
                 e -> onBasicKey(this::basicoCambiarSigno));
-
-        // IMPORTANTE:
-        // Backspace/Delete NO los ponemos aquí como "única" solución,
-        // porque algunos componentes pueden consumirlos antes.
-        // Los resolvemos de forma robusta con el dispatcher.
     }
 
-    /**
-     * Dispatcher global:
-     * Backspace/Delete son teclas que a veces el foco (menú/botón) captura.
-     * Con esto, SIEMPRE que estés en modo BASIC, borrará carácter a carácter.
-     */
-    private void instalarDispatcherBorradoBasico() {
+    private void instalarKeyBindingsAvanzado() {
+        JRootPane root = getRootPane();
+        InputMap im = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = root.getActionMap();
+
+        // Operadores (numpad)
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0), "AV_OP_ADD",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("+")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), "AV_OP_SUB",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("-")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_MULTIPLY, 0), "AV_OP_MUL",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("*")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "AV_OP_DIV",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("/")));
+
+        // Operadores por carácter - Compatibilidad ES/US
+        // Suma
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.SHIFT_DOWN_MASK), "AV_OP_ADD_SHIFT",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("+")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.SHIFT_DOWN_MASK), "AV_OP_ADD_EQUALS",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("+")));
+
+        // Multiplicación
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_8, InputEvent.SHIFT_DOWN_MASK), "AV_OP_MUL_8",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("*")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.SHIFT_DOWN_MASK), "AV_OP_MUL_BRACKET",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("*")));
+
+        // División
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, 0), "AV_OP_DIV_SLASH",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("/")));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_7, InputEvent.SHIFT_DOWN_MASK), "AV_OP_DIV_7",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("/")));
+
+        // Resta
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "AV_OP_SUB_MINUS",
+                e -> onAdvancedKey(() -> avanzadoSetOperacion("-")));
+
+        // Igual: Enter y tecla = (con y sin Shift)
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "AV_EQ_ENTER",
+                e -> onAdvancedKey(this::avanzadoIgual));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 0), "AV_EQ_EQUALS",
+                e -> onAdvancedKey(this::avanzadoIgual));
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.SHIFT_DOWN_MASK), "AV_EQ_EQUALS_SHIFT",
+                e -> onAdvancedKey(this::avanzadoIgual));
+
+        // Clear
+        bind(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "AV_CLR_ESC",
+                e -> onAdvancedKey(this::avanzadoClear));
+    }
+
+    private void instalarDispatcherBorrado() {
+        // Dispatcher global de teclado: funciona aunque el foco esté en botones,
+        // y es independiente del layout (ES/US) porque usa el carácter tipeado cuando aplica.
         if (basicDeleteDispatcherInstalled) return;
         basicDeleteDispatcherInstalled = true;
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
 
-            // Solo modo BASIC
-            if (currentMode != Mode.BASIC) return false;
-
-            // Solo KEY_PRESSED (evita doble borrado)
-            if (e.getID() != KeyEvent.KEY_PRESSED) return false;
-
-            int code = e.getKeyCode();
-            if (code != KeyEvent.VK_BACK_SPACE && code != KeyEvent.VK_DELETE) return false;
-
-            // ✅ CLAVE: SOLO interceptar si el foco está dentro de ESTA ventana (la calculadora)
+            // Solo si la ventana activa es esta
             Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             if (focusOwner == null) return false;
-
             Window w = SwingUtilities.getWindowAncestor(focusOwner);
-
-            // Si el foco NO está en nuestra ventana, NO consumimos nada (ej: JavaHelp)
             if (w != this) return false;
 
-            // Si estamos aquí: foco dentro de la calculadora -> borramos carácter
-            basicoBorrarUltimo();
-            return true; // consumimos
+            // No interferir con atajos Ctrl/Alt/Meta (copiar/pegar, etc.)
+            int mods = e.getModifiersEx();
+            boolean hasCtrlAltMeta =
+                    (mods & (InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0;
+            if (hasCtrlAltMeta) return false;
+
+            // Referencia rápida al campo avanzado
+            boolean focoEnEntradaAvanzada = (focusOwner == txtAvanzadoEntrada);
+
+            // =============== KEY_PRESSED (teclas sin carácter: Enter, Escape, Numpad, Backspace/Delete) ===============
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+                int code = e.getKeyCode();
+
+                // Enter => igual
+                if (code == KeyEvent.VK_ENTER) {
+                    if (currentMode == Mode.BASIC) basicoIgual();
+                    else if (currentMode == Mode.ADVANCED) avanzadoIgual();
+                    return true;
+                }
+
+                // Escape => clear
+                if (code == KeyEvent.VK_ESCAPE) {
+                    if (currentMode == Mode.BASIC) basicoClear();
+                    else if (currentMode == Mode.ADVANCED) avanzadoClear();
+                    return true;
+                }
+
+                // Backspace/Delete: en BASIC siempre; en ADVANCED solo si NO estás escribiendo en el input
+                if (code == KeyEvent.VK_BACK_SPACE || code == KeyEvent.VK_DELETE) {
+                    if (currentMode == Mode.BASIC) {
+                        basicoBorrarUltimo();
+                        return true;
+                    }
+                    if (currentMode == Mode.ADVANCED && !focoEnEntradaAvanzada) {
+                        avanzadoBorrarUltimo();
+                        return true;
+                    }
+                    return false;
+                }
+
+                // Operadores del numpad
+                if (code == KeyEvent.VK_ADD) {
+                    if (currentMode == Mode.BASIC) basicoSetOperacion("+");
+                    else if (currentMode == Mode.ADVANCED) avanzadoSetOperacion("+");
+                    return true;
+                }
+                if (code == KeyEvent.VK_SUBTRACT) {
+                    if (currentMode == Mode.BASIC) basicoMinusInteligente();
+                    else if (currentMode == Mode.ADVANCED) avanzadoSetOperacion("-");
+                    return true;
+                }
+                if (code == KeyEvent.VK_MULTIPLY) {
+                    if (currentMode == Mode.BASIC) basicoSetOperacion("*");
+                    else if (currentMode == Mode.ADVANCED) avanzadoSetOperacion("*");
+                    return true;
+                }
+                if (code == KeyEvent.VK_DIVIDE) {
+                    if (currentMode == Mode.BASIC) basicoSetOperacion("/");
+                    else if (currentMode == Mode.ADVANCED) avanzadoSetOperacion("/");
+                    return true;
+                }
+
+                return false;
+            }
+
+            // =============== KEY_TYPED (caracteres: dígitos, + - * /, =, ., ,) ===============
+            if (e.getID() == KeyEvent.KEY_TYPED) {
+                char ch = e.getKeyChar();
+
+                // En ADVANCED, si estás escribiendo en el input, dejamos pasar dígitos/letras válidas.
+                // Pero interceptamos operadores para que NO se inserten como texto.
+                if (currentMode == Mode.ADVANCED && focoEnEntradaAvanzada) {
+                    // En el input avanzado dejamos teclear los números/letras según base.
+                    // Interceptamos operadores para que NO se inserten como texto... excepto el '-' cuando se usa como signo.
+                    if (ch == '+' || ch == '*' || ch == '/') {
+                        avanzadoSetOperacion(String.valueOf(ch));
+                        return true; // consumimos para que no se escriba el símbolo
+                    }
+                    if (ch == '-') {
+                        String t = txtAvanzadoEntrada.getText();
+                        boolean permitirComoSigno = t.isEmpty() && (avanzadoAcumulado == null || avanzadoLimpiarEnSiguiente);
+                        if (permitirComoSigno) {
+                            return false; // dejamos que el DocumentFilter lo gestione como signo negativo
+                        }
+                        avanzadoSetOperacion("-");
+                        return true;
+                    }
+                    if (ch == '=') {
+                        avanzadoIgual();
+                        return true;
+                    }
+                    // Dejar escribir (0-9, A-F, etc.). El DocumentFilter ya filtra por base.
+                    return false;
+                }
+
+                // BASIC: dígitos
+                if (currentMode == Mode.BASIC) {
+                    if (ch >= '0' && ch <= '9') {
+                        basicoAppend(String.valueOf(ch));
+                        return true;
+                    }
+                    if (ch == '.' || ch == ',') {
+                        basicoPunto();
+                        return true;
+                    }
+                    if (ch == '+' || ch == '*' || ch == '/') {
+                        basicoSetOperacion(String.valueOf(ch));
+                        return true;
+                    }
+                    if (ch == '-') {
+                        basicoMinusInteligente();
+                        return true;
+                    }
+                    if (ch == '=') {
+                        basicoIgual();
+                        return true;
+                    }
+                }
+
+                // ADVANCED (foco no está en el input): permitir atajos rápidos con teclado
+                if (currentMode == Mode.ADVANCED) {
+                    if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                        avanzadoSetOperacion(String.valueOf(ch));
+                        return true;
+                    }
+                    if (ch == '=') {
+                        avanzadoIgual();
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return false;
         });
     }
 
-
-    /**
-     * Ejecuta una acción solo si estamos en modo BASIC.
-     */
     private void onBasicKey(Runnable r) {
         if (currentMode != Mode.BASIC) return;
+        r.run();
+    }
+
+    private void onAdvancedKey(Runnable r) {
+        if (currentMode != Mode.ADVANCED) return;
         r.run();
     }
 
     private void bind(InputMap im, ActionMap am, KeyStroke ks, String name, ActionListener al) {
         im.put(ks, name);
         am.put(name, new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { al.actionPerformed(e); }
-        });
-    }
-
-    private void bindChar(InputMap im, ActionMap am, char ch, String name, ActionListener al) {
-        KeyStroke ks = KeyStroke.getKeyStroke(ch);
-        im.put(ks, name);
-        am.put(name, new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { al.actionPerformed(e); }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                al.actionPerformed(e);
+            }
         });
     }
 
@@ -1056,7 +1339,7 @@ public class CalculadoraApp extends JFrame {
         JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // =========================================================
+    // =========================================================s
     //  Main
     // =========================================================
     public static void main(String[] args) {
