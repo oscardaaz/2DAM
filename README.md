@@ -1,16 +1,35 @@
-<h2 style="color: #2c3e50; font-family: Arial, sans-serif;"><strong>CFGS 2ºDAM (Desarrollo de Aplicaciones Multiplataforma).</strong></h2><br>
+# 2º DAM — Java (AD/PSP) + Kotlin (PMDM)
 
-<h2 style="color: #2c3e50; font-family: Arial, sans-serif;">Bienvenidos.</h2>
+Repositorio con **ejercicios y proyectos académicos** de 2º de DAM, enfocados principalmente en:
+- **Java** para **Acceso a Datos (AD)** y **Programación de Servicios y Procesos (PSP)**
 
-<p style="font-size: 16px; color: #34495e; font-family: Arial, sans-serif;">
-  Basicamente son ejercicios de clase en (Proyectos Clase, para tenerlos guardados y actualizados).
-</p>
-<p style="font-size: 16px; color: #34495e; font-family: Arial, sans-serif;">
-  Basicamente un superbasurero para organizar un poco gracias.
-</p>
+> Objetivo: mantener el trabajo del curso organizado, versionado y fácil de revisar.
 
-<h2 style="color: #2c3e50; font-family: Arial, sans-serif;">Welcome.</h2>
+## Estructura (carpetas principales)
+- `Ejercicios_AD` — prácticas de Acceso a Datos (ficheros/BD/DAO, etc. según ejercicios).
+- `Programacion_procesos_servicios` — prácticas de PSP (procesos, hilos, sockets, etc. según ejercicios).
+- `KotlinPMDM` — ejercicios en Kotlin relacionados con PMDM.
+- `Proyectos_Clase` — recopilación de ejercicios y proyectos vistos en clase.
+- `Practica-Casa` — tareas o prácticas realizadas fuera de clase.
+- `ProyectoCMD` — proyecto/ejercicios orientados a consola.
+- `calculadora` — proyecto de práctica.
+- `RetoTecnicoGrupo2` / `RetoTecnicoGrupo2Def` — reto técnico en grupo (versiones/iteraciones).
 
-<p style="font-size: 16px; color: #34495e; font-family: Arial, sans-serif;">
-  These are basically class exercises in (Class Projects, to keep them saved and updated).
-</p>
+## Tecnologías
+- Java (principal)
+- Hibernate
+- JPA - JPQL
+- Git/GitHub (control de versiones)
+- (Según práctica) herramientas de BD / SQL
+
+## Cómo ejecutar
+Depende del proyecto:
+- **Proyectos Java**: abrir la carpeta correspondiente en IntelliJ/Eclipse y ejecutar la clase `main`.
+- **Proyectos Gradle/Maven** (si aplica): importar como proyecto y dejar que resuelva dependencias.
+
+## Notas
+- Este repositorio contiene **material académico** (ejercicios y prácticas).
+- Iré mejorando READMEs por carpeta con instrucciones y objetivos más detallados.
+
+## Contacto
+- GitHub: https://github.com/oscardaaz
