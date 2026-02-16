@@ -78,4 +78,14 @@ public class Sede {
         proyectoSedes.remove(ps);
         ps.setSede(null);
     }
+
+    @Override
+    public String toString() {
+        return "Sede{" +
+                "id=" + id +
+                ", nomSede='" + nomSede + '\'' +
+                ", departamentos=" + departamentos +
+                ", proyectoSedes=" + proyectoSedes +
+                '}';
+    }
 }

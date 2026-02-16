@@ -60,4 +60,13 @@ public class Empleado {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Empleado{" +
+                "dni='" + dni + '\'' +
+                ", nomEmp='" + nomEmp + '\'' +
+                ", departamento=" + departamento +
+                ", empleadoDatosProf=" + empleadoDatosProf +
+                '}';
+    }
 }

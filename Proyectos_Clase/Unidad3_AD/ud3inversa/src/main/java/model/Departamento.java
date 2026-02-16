@@ -70,5 +70,13 @@ public class Departamento {
         e.setDepartamento(null);
     }
 
-
+    @Override
+    public String toString() {
+        return "Departamento{" +
+                "id=" + id +
+                ", nomDepto='" + nomDepto + '\'' +
+                ", sede=" + sede +
+                ", empleados=" + empleados +
+                '}';
+    }
 }
