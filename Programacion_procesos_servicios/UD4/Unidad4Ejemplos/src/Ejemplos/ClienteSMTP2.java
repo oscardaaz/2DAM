@@ -13,7 +13,8 @@ public class ClienteSMTP2 {
 		SMTPClient client= new SMTPClient();
 		 try {
 		      int respuesta;
-		      client.connect("localhost");
+//		      client.connect("localhost");
+		      client.connect("192.168.56.102");
 		      System.out.print(client.getReplyString());
 		      respuesta = client.getReplyCode();
 
@@ -26,7 +27,7 @@ public class ClienteSMTP2 {
 		      client.login();
 		    
 		      String remitente ="yo@localhost.es";
-		      String destino1="alumnouni5@gmail.com";
+		      String destino1="correo1@correo.local";
 		      String destino2="mariajesusramos@brianda.net";		      
 		      String asunto="Prueba de SMTPClient";
 		      String mensaje = "Hola. \nEnviando saludos.\nChao.";

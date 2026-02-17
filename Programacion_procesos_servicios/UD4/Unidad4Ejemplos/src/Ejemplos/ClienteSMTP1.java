@@ -11,7 +11,8 @@ public class ClienteSMTP1 {
 	try {
 	    int respuesta;
 	    //NOS CONECTAMOS AL PUERTO 25
-          client.connect("localhost");	    
+//          client.connect("localhost");
+          client.connect(args[0]);
 	    System.out.print(client.getReplyString());
 	    respuesta = client.getReplyCode();
 		

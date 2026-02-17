@@ -17,16 +17,16 @@ import java.security.spec.InvalidKeySpecException;
 public class ClienteSMTP3 {
 	public static void main(String[] args) throws NoSuchAlgorithmException, UnrecoverableKeyException,
 			KeyStoreException, InvalidKeyException, InvalidKeySpecException {
-
+        if (args.length < 3) System.out.println("Introduce server , username y password");
 		// se crea cliente SMTP seguro
 		AuthenticatingSMTPClient client = new AuthenticatingSMTPClient();
 
 		// datos del usuario y del servidor
-		String server = "smtp.gmail.com";
-		String username = "correo@gmail.com";
-		String password = "claveusuario";
+		String server = args[0];
+		String username = args[1];
+		String password = args[2];
 		int puerto = 587;
-		String remitente = "correo@gmail.com";
+		String remitente = "yo@localhost.es";
 
 		try {
 			int respuesta;
@@ -61,7 +61,7 @@ public class ClienteSMTP3 {
 				// se realiza la autenticaci�n con el servidor
 				if (client.auth(AuthenticatingSMTPClient.AUTH_METHOD.LOGIN, username, password)) {
 					System.out.println("4 - " + client.getReplyString());
-					String destino1 = "mariajesusramos@brianda.net";
+					String destino1 = "correo1@correo.local";
 					String asunto = "Prueba de SMTPClient con GMAIL";
 					String mensaje = "Hola. \nEnviando saludos.\nUsando  GMAIL.\nChao.";
 					// se crea la cabecera
