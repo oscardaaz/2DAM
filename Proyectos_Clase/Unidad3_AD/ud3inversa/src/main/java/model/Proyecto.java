@@ -79,4 +79,13 @@ public class Proyecto {
         ps.setProyecto(null);
     }
 
+    @Override
+    public String toString() {
+        return "Proyecto{" +
+                "id=" + id +
+                ", nomProy='" + nomProy + '\'' +
+                ", fInicio=" + fInicio +
+                ", fFin=" + fFin +
+                '}';
+    }
 }

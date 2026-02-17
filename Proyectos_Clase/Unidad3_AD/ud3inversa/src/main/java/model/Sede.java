@@ -84,8 +84,6 @@ public class Sede {
         return "Sede{" +
                 "id=" + id +
                 ", nomSede='" + nomSede + '\'' +
-                ", departamentos=" + departamentos +
-                ", proyectoSedes=" + proyectoSedes +
                 '}';
     }
 }

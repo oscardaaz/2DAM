@@ -66,7 +66,8 @@ public class EmpleadoDatosProf {
                 "id=" + id +
                 ", empleado=" + empleado +
                 ", categoria='" + categoria + '\'' +
-                ", sueldoBrutoAnual=" + sueldoBrutoAnual +
+                ", sueldoBrutoAnual=" + empleado.getEmpleadoDatosProf() +
                 '}';
     }
+
 }

@@ -18,7 +18,10 @@ public class MainJPQL {
             //   em = emf.createEntityManager();
 
 //        Ejercicios Bloque A — SELECT básicos (entidades completas)
-//        listarTodasLasSedes();
+//       listarTodasLasSedes();
+//       listarTodasLosDepartamentos();
+       listarTodasLosEmpleados();
+//            listarTodasLosProyectos();
 //        listarDepartamentosDeUnaSedePorNombre();
 //        buscarEmpleadoDNI();
 
@@ -47,12 +50,76 @@ public class MainJPQL {
             TypedQuery<Sede> q = em.createQuery(jpql, Sede.class);
             List<Sede> listaSedes = q.getResultList();
             for (Sede sede : listaSedes) {
-                System.out.println(sede.getNomSede());
+                System.out.println(sede);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error en listar todas las sedes " + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+
+    private static void listarTodasLosDepartamentos() {
+        EntityManager em = null;
+        try {
+            em = emf.createEntityManager();
+
+            String jpql = "SELECT d FROM Departamento d";
+            TypedQuery<Departamento> q = em.createQuery(jpql, Departamento.class);
+            List<Departamento> listaDepartamentos = q.getResultList();
+            for (Departamento d : listaDepartamentos) {
+                System.out.println(d);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error en listar todas los departamentos" + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+
+    private static void listarTodasLosEmpleados() {
+        EntityManager em = null;
+        try {
+            em = emf.createEntityManager();
+
+            String jpql = "FROM Empleado";
+            TypedQuery<Empleado> q = em.createQuery(jpql, Empleado.class);
+            List<Empleado> listaEmpleados = q.getResultList();
+            for (Empleado e : listaEmpleados) {
+                System.out.println(e);
+              //  System.out.println(e.getEmpleadoDatosProf());
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error en listar todas los departamentos" + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+
+    private static void listarTodasLosProyectos() {
+        EntityManager em = null;
+        try {
+            em = emf.createEntityManager();
+
+            String jpql = "FROM Proyecto";
+            TypedQuery<Proyecto> q = em.createQuery(jpql, Proyecto.class);
+            List<Proyecto> listaProyectos = q.getResultList();
+            for (Proyecto p : listaProyectos) {
+                System.out.println(p);
+                //  System.out.println(e.getEmpleadoDatosProf());
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error en listar todas los departamentos" + e.getMessage());
         } finally {
             if (em != null && em.isOpen()) em.close();
         }

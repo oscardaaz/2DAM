@@ -76,7 +76,7 @@ public class Departamento {
                 "id=" + id +
                 ", nomDepto='" + nomDepto + '\'' +
                 ", sede=" + sede +
-                ", empleados=" + empleados +
                 '}';
     }
+
 }
