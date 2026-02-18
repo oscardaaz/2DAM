@@ -73,4 +73,13 @@ public class Profesor {
         this.cursos = cursos;
     }
 
+    @Override
+    public String toString() {
+        return "Profesor{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", email='" + email + '\'' +
+                ", sede=" + sede +
+                '}';
+    }
 }
