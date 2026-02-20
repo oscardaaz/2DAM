@@ -216,7 +216,7 @@ public class Main {
 //                    " ORDER BY c.fecha DESC";
 
             String jpql = "FROM Consulta c " +
-                    "WHERE c.mascota.propietario.apellidos = :apellidoPropietario ";
+                    "WHERE c.mascota.propietario.apellidos = :apellidoPropietario ORDER BY c.fecha DESC";
 
             TypedQuery<Consulta> q = em.createQuery(jpql, Consulta.class);
             q.setParameter("apellidoPropietario",apellidoPropietario.trim());
