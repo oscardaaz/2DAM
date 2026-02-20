@@ -109,7 +109,7 @@ public class Main {
             }
 
         }catch (Exception e) {
-            System.err.println("Excepción al consultar las especies: " + e.getMessage());
+            System.err.println("Excepción al consultar las mascotas: " + e.getMessage());
         } finally {
             if (em != null && em.isOpen()) em.close();
         }
@@ -237,7 +237,7 @@ public class Main {
 
         } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Excepción al mostrar mascotas por especie: " + e.getMessage());
+            System.err.println("Excepción al mostrar consultas por propietario: " + e.getMessage());
         } finally {
             if (em != null && em.isOpen()) em.close();
         }
@@ -283,7 +283,7 @@ public class Main {
 
         } catch (Exception e) {
             if (tx != null && tx.isActive()) tx.rollback();
-            System.err.println("Excepción al borrar consultas: " + e.getMessage());
+            System.err.println("Excepción al borrar consultas anteriores a date: " + e.getMessage());
         } finally {
             if (em != null && em.isOpen()) em.close();
         }
