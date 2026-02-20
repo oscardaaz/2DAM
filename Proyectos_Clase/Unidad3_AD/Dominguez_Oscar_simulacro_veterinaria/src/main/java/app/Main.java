@@ -31,10 +31,10 @@ public class Main {
 //        mostrarMascotasPorEspecie(1);
 
 //         Ejercicio 6
-//        mostrarConsultasPorPropietario("Pérez");
+        mostrarConsultasPorPropietario("Pérez");
 
 //        Ejercicio 7
-            eliminarConsultasAnteriores(2023);
+//            eliminarConsultasAnteriores(2023);
 
 
         JPAUtil.close();
@@ -215,8 +215,13 @@ public class Main {
 //                    " WHERE p.apellidos = :apellidoPropietario" +
 //                    " ORDER BY c.fecha DESC";
 
-            String jpql = "FROM Consulta c " +
-                    "WHERE c.mascota.propietario.apellidos = :apellidoPropietario ORDER BY c.fecha DESC";
+            String jpql = "SELECT c FROM Consulta c" +
+                    " JOIN c.mascota.propietario p" +
+                    " WHERE p.apellidos = :apellidoPropietario" +
+                    " ORDER BY c.fecha DESC";
+
+//            String jpql = "FROM Consulta c " +
+//                    "WHERE c.mascota.propietario.apellidos = :apellidoPropietario ORDER BY c.fecha DESC";
 
             TypedQuery<Consulta> q = em.createQuery(jpql, Consulta.class);
             q.setParameter("apellidoPropietario",apellidoPropietario.trim());
