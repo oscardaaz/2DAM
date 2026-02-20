@@ -1,0 +1,29 @@
+<configuration>
+
+    <!-- Appender por consola -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Silenciar casi todo Hibernate -->
+    <logger name="org.hibernate" level="WARN"/>
+
+    <!-- Mostrar SQL (si show_sql está activo) -->
+    <logger name="org.hibernate.SQL" level="INFO"/>
+
+    <!-- Silenciar parámetros y detalles internos -->
+    <logger name="org.hibernate.type" level="WARN"/>
+    <!-- <logger name="org.hibernate.orm.jdbc.bind" level="WARN"/> -->
+
+    <!-- Me da los datos de las ? , ? -->
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+    <!-- <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/> -->
+
+    <!-- Root -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
