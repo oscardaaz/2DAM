@@ -19,6 +19,7 @@
 
     <!-- Me da los datos de las ? , ? -->
     <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+    <!-- <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/> -->
 
     <!-- Root -->
     <root level="INFO">
