@@ -22,7 +22,7 @@ public class Main {
 //        mostrarEspecies();
 
 //        Ejercicio 3
-//        mostrarMascotas();
+//        mostrarMascotas(em);
 
 //        Ejercicio 4
 //        insertarPropietario("Manuel","Soto","6643523475");
@@ -47,8 +47,6 @@ public class Main {
            em = JPAUtil.createEntityManager();
            tx = em.getTransaction();
            tx.begin();
-
-
 
            tx.commit();
         } catch (Exception e) {
