@@ -231,12 +231,16 @@ public class Main {
             System.out.println("*** Método mostrarConsultasPorPropietario");
             System.out.println("Consultas de mascotas del propietario '"+ listaConsultas.getFirst().getMascota().getPropietario().getApellidos()+ "':");
             System.out.println();
-            for (Consulta c : listaConsultas) {
-                System.out.println(c);
-            }
+//            for (Consulta c : listaConsultas) {
+//                System.out.println(c);
+//            }
 
 
-            // Otra forma:
+//          TODO   Tipos de for each:
+            listaConsultas.forEach(e -> System.out.println(e));
+//          listaConsultas.forEach(System.out::println);
+
+//            Otra forma:
 
 
 
