@@ -66,7 +66,7 @@ public class Empleado {
                 "dni='" + dni + '\'' +
                 ", nomEmp='" + nomEmp + '\'' +
                 ", departamento=" + departamento +
-                ", empleadoDatosProf=" + empleadoDatosProf +
                 '}';
     }
+
 }

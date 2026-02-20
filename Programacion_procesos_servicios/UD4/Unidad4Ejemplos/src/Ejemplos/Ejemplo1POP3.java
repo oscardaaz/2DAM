@@ -15,7 +15,7 @@ import org.apache.commons.net.pop3.POP3SClient;
  */
 public class Ejemplo1POP3 {
     public static void main(String[] args) {
-        String server = "localhost", username = "usu1", password = "usu1";
+        String server = "192.168.56.102", username = "correo1", password = "correo1";
         int puerto = 110;
         
         POP3SClient pop3 = new POP3SClient();
@@ -30,9 +30,9 @@ public class Ejemplo1POP3 {
                     System.out.println("Imposible recuperar mensajes");
                 else
                     System.out.println("Nº de mensajes: " + mensajes.length);
-               // Recuperarmensajes(mensajes,pop3);
+              // Recuperarmensajes(mensajes,pop3);
                // Recuperarcabeceras(mensajes,pop3);
-                //RecuperarmensajesCompletos(mensajes,pop3);
+                RecuperarmensajesCompletos(mensajes,pop3);
                 pop3.logout();
             }
             pop3.disconnect();
