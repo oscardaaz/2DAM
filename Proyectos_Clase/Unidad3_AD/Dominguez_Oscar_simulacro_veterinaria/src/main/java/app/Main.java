@@ -3,12 +3,15 @@ package app;
 import data.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import model.Consulta;
 import model.Especie;
 import model.Mascota;
 import model.Propietario;
 
-import java.sql.SQLOutput;
+import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
@@ -24,8 +27,15 @@ public class Main {
 //        Ejercicio 4
 //        insertarPropietario("Manuel","Soto","6643523475");
 
-//          Ejercicio 5
-        mostrarMascotasPorEspecie(1);
+//        Ejercicio 5
+//        mostrarMascotasPorEspecie(1);
+
+//         Ejercicio 6
+//        mostrarConsultasPorPropietario("Pérez");
+
+//        Ejercicio 7
+            eliminarConsultasAnteriores(2023);
+
 
         JPAUtil.close();
     }
@@ -188,5 +198,97 @@ public class Main {
         }
     }
 
+    // Ejercicio 6
+    /* CON JPQL — mostrarConsultasPorPropietario
+    Recibe el apellido de un propietario y muestra todas las consultas de sus mascotas, mostrando: nombre de la
+    mascota, fecha, motivo y precio. Ordenado por fecha descendente. Las consultas JPQL deben tener todos los
+    valores parametrizados.
+    */
+
+    private static void mostrarConsultasPorPropietario (String apellidoPropietario){
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        try {
+            em = JPAUtil.createEntityManager();
+
+//            String jpql = "SELECT c FROM Consulta c" +
+//                    " JOIN c.mascota m" +
+//                    " JOIN c.mascota.propietario p" +
+//                    " WHERE p.apellidos = :apellidoPropietario" +
+//                    " ORDER BY c.fecha DESC";
+
+            String jpql = "FROM Consulta c " +
+                    "WHERE c.mascota.propietario.apellidos = :apellidoPropietario ";
+
+            TypedQuery<Consulta> q = em.createQuery(jpql, Consulta.class);
+            q.setParameter("apellidoPropietario",apellidoPropietario.trim());
+
+            List<Consulta> listaConsultas = q.getResultList();
+
+            System.out.println("*** Método mostrarConsultasPorPropietario");
+            System.out.println("Consultas de mascotas del propietario '"+ listaConsultas.getFirst().getMascota().getPropietario().getApellidos()+ "':");
+            System.out.println();
+            for (Consulta c : listaConsultas) {
+                System.out.println(c);
+            }
+
+
+            // Otra forma:
+
+
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Excepción al mostrar mascotas por especie: " + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+
+
+//    Ejercicio 7
+    /* — CON JPQL — eliminarConsultasAnteriores
+    Recibe un año como entero y elimina todas las consultas cuya fecha sea anterior al 1 de enero de ese año.
+    Muestra el número de consultas eliminadas y el contenido actualizado de la tabla. Todos los valores deben
+    estar parametrizados.
+    */
+
+    private static void eliminarConsultasAnteriores(int anio)
+    {
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        try {
+            em = JPAUtil.createEntityManager();
+            tx = em.getTransaction();
+
+            tx.begin();
+            String jpql = "DELETE FROM Consulta c WHERE c.fecha < :date";
+
+            Query q = em.createQuery(jpql);
+            LocalDate anioFiltrado = java.time.LocalDate.of(anio,1,1);
+
+            q.setParameter("date",anioFiltrado);
+            int consultasBorradas = q.executeUpdate();
+
+            tx.commit();
+
+            String jpqlSearch = "SELECT c FROM Consulta c";
+            TypedQuery<Consulta> qSearch = em.createQuery(jpqlSearch, Consulta.class);
+            List<Consulta> listaConsultas = qSearch.getResultList();
+
+            System.out.println("*** Método eliminarConsultasAnteriores");
+            System.out.println("Consultas eliminadas anteriores a "+ anio +": "+consultasBorradas);
+            System.out.println("*** Contenido actualizado de la tabla 'consulta':");
+
+            for (Consulta c : listaConsultas) System.out.println(c);
+
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            System.err.println("Excepción al borrar consultas: " + e.getMessage());
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
 
 } // FIN DE LA CLASE

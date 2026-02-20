@@ -86,7 +86,6 @@ public class Mascota {
                 " especie=" + especie.getNomEspecie() +
                 " propietario=" + propietario.getNombre() + " " +
                         propietario.getApellidos() +
-                " anioNac=" + anioNacimiento +
-                '}';
+                " anioNac=" + anioNacimiento;
     }
 }

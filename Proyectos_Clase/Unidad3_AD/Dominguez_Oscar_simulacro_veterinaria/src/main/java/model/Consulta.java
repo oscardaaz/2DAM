@@ -67,12 +67,11 @@ public class Consulta {
 
     @Override
     public String toString() {
-        return "Consulta{" +
-                "id=" + id +
-                ", mascota=" + mascota +
-                ", fecha=" + fecha +
-                ", motivo='" + motivo + '\'' +
-                ", precio=" + precio +
-                '}';
+        return "codMascota= "+ mascota.getId() +
+                " mascota=" + mascota.getNombre() +
+                " fecha=" + fecha +
+                " motivo='" + motivo + '\'' +
+                " precio=" + precio ;
     }
+
 }
