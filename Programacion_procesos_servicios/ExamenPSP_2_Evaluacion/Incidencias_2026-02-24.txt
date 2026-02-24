@@ -2,3 +2,4 @@ oscar;informatica;Ordenador;Problema con programa html;ALTA;2026-02-24;19:19:03.
 oasd;asd;asd;asd;BAJA;2026-02-24;19:19:21.400202500
 oscar;asd;asd;asd;ALTA;2026-02-24;19:19:27.628443100
 asd;dsa;asd;asd;ALTA;2026-02-24;19:20:06.087277700
+oscar;asd;asd;asd;BAJA;2026-02-24;19:44:20.371971500
