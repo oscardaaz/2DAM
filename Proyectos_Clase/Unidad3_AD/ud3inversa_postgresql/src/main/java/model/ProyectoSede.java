@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name = "proyecto_sede", schema = "inversa", indexes = {
+@Table(name = "proyecto_sede",  indexes = {
         @Index(name = "id_sede", columnList = "id_sede")
 })
 public class ProyectoSede {

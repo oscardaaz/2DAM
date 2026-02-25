@@ -4,7 +4,7 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
              version="3.1">
 
-    <persistence-unit name="ud3-demo-ing-inversa" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="ud3-inversa-postgres" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <properties>
@@ -14,7 +14,7 @@
 
             <!-- BBDD Ubuntu por IP y Puente Anfitrión *PostgreSQL* -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://192.168.56.102:5432/inversa"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://192.168.56.102:5432/inversa_pg"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
             <property name="jakarta.persistence.jdbc.password" value="admin"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>

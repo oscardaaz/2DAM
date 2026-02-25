@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "sede", schema = "inversa", uniqueConstraints = {
+@Table(name = "sede", uniqueConstraints = {
         @UniqueConstraint(name = "nom_sede", columnNames = {"nom_sede"})
 })
 public class Sede {
@@ -81,9 +81,7 @@ public class Sede {
 
     @Override
     public String toString() {
-        return "Sede{" +
-                "id=" + id +
-                ", nomSede='" + nomSede + '\'' +
-                '}';
+        return "id= " + id +
+                " nomSede= " + nomSede;
     }
 }

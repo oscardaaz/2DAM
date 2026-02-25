@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "departamento", schema = "inversa", indexes = {
+@Table(name = "departamento",  indexes = {
         @Index(name = "id_sede", columnList = "id_sede")
 }, uniqueConstraints = {
         @UniqueConstraint(name = "nom_depto", columnNames = {"nom_depto", "id_sede"})

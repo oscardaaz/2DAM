@@ -3,7 +3,7 @@ package model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "empleado", schema = "inversa", indexes = {
+@Table(name = "empleado", indexes = {
         @Index(name = "id_depto", columnList = "id_depto")
 })
 public class Empleado {

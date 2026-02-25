@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "proyecto", schema = "inversa", uniqueConstraints = {
+@Table(name = "proyecto", uniqueConstraints = {
         @UniqueConstraint(name = "nom_proy", columnNames = {"nom_proy"})
 })
 public class Proyecto {

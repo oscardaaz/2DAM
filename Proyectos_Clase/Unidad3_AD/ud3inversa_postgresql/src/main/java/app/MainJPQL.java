@@ -9,7 +9,7 @@ import java.util.List;
 public class MainJPQL {
 
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("ud3-demo-ing-inversa");
+            Persistence.createEntityManagerFactory("ud3-inversa-postgres");
 
     public static void main(String[] args) {
 

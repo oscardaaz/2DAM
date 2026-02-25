@@ -6,7 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "empleado_datos_prof", schema = "inversa", uniqueConstraints = {
+@Table(name = "empleado_datos_prof",  uniqueConstraints = {
         @UniqueConstraint(name = "dni", columnNames = {"dni"})
 })
 public class EmpleadoDatosProf {
