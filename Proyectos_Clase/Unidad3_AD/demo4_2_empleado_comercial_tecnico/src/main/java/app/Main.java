@@ -6,6 +6,7 @@ import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
+
         try (Connection conexion = ConexionBD.getConexion()) {
             System.out.println("------ Datos de todos los empleados -------\n");
             mostrarDatosEmpleados(conexion);
