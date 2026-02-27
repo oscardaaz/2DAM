@@ -18,7 +18,7 @@ public class MainPG {
             tx = em.getTransaction();
             tx.begin();
             Sede sede = new Sede();
-            sede.setNomSede("Madrid");
+            sede.setNomSede("Malaga");
             em.persist(sede);
             tx.commit();
 
