@@ -59,8 +59,8 @@ public class ConexionBD {
     }
 
     /**
-     * Método público utilizado para obtener el objeto que representa esa
-     * conexión llamando al método privado conectar()
+     * Metodo público utilizado para obtener el objeto que representa esa
+     * conexión llamando al metodo privado conectar()
      *
      * @return El objeto Connection
      */
