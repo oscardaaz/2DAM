@@ -65,8 +65,6 @@ public class Departamento {
         e.setDepartamento(this);
     }
 
-    // Comentario de prueba
-
     public void removeEmpleado(Empleado e) {
         empleados.remove(e);
         e.setDepartamento(null);
